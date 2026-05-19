@@ -1368,7 +1368,7 @@ window.addEventListener('load', () => {
     const body     = section.querySelector('.pi-body');
     const textEls  = [eye, h2, body].filter(Boolean);
 
-    // ── BG: white → #d0d0d0 as section scrolls in ──
+    // ── BG: white → #d0d0d0 as process-intro scrolls in ──
     gsap.fromTo(section,
       { backgroundColor: '#ffffff' },
       { backgroundColor: '#d0d0d0', ease: 'none',
@@ -1378,6 +1378,20 @@ window.addEventListener('load', () => {
         }
       }
     );
+
+    // ── Services section also fades white → gray in sync ──
+    const servicesSection = document.getElementById('services');
+    if (servicesSection) {
+      gsap.fromTo(servicesSection,
+        { backgroundColor: '#ffffff' },
+        { backgroundColor: '#d0d0d0', ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top 80%', end: 'top 10%',
+            scrub: 1, invalidateOnRefresh: true,
+          }
+        }
+      );
+    }
 
     // ── MOBILE: horizontal pan tied to vertical scroll ──
     if (diagram && isMobile) {
