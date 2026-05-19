@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en" class="preloading">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FrankNDesign – Virtual Production & Themed Entertainment Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --white:#ffffff;
+  --off-white:#f4f4f4;
+  --warm-white:#f4f4f4;
+  --gray-50:#f4f4f4;
+  --orange:#e30613;
+  --orange-hover:#ff1a2a;
+  --orange-pale:#fdecee;
+  --orange-mid:#f9c5c9;
+  --black:#111111;
+  --ink:#1c1c1c;
+  --muted:#8a8a8a;
+  --muted-light:#b5b5b5;
+  --border:#e6e6e6;
+  --border-dark:#cccccc;
+  --font-d:'Bebas Neue',sans-serif;
+  --font-b:'DM Sans',sans-serif;
+}
+body{background:var(--white);color:var(--ink);font-family:var(--font-b);font-weight:300;line-height:1.65;overflow-x:hidden;}
+
+/* SCROLL ANIMATIONS — GSAP-driven. Only hide initial state when JS is ready. */
+.js-ready .reveal,
+.js-ready .reveal-l,
+.js-ready .reveal-r,
+.js-ready .reveal-scale{visibility:visible;}
+/* fallback for no-JS or before GSAP boots: no hiding (avoid blank page) */
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem 3.5rem;display:flex;align-items:center;justify-content:space-between;transition:background .4s,padding .4s,box-shadow .4s;}
+#nav.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(16px);padding:.8rem 3.5rem;box-shadow:0 1px 0 var(--border);}
+.nav-logo{text-decoration:none;display:flex;align-items:center;}
+.nav-logo-img{height:38px;width:auto;display:block;filter:brightness(0) invert(1);transition:filter .4s;}
+#nav.scrolled .nav-logo-img{filter:none;}
+.nav-links{display:flex;gap:2.4rem;list-style:none;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;transition:color .25s;}
+#nav.scrolled .nav-links a{color:var(--muted);}
+.nav-links a:hover{color:var(--orange)!important;}
+.nav-cta{background:var(--orange)!important;color:var(--white)!important;padding:.5rem 1.5rem;border-radius:2px;font-weight:500!important;}
+.nav-cta:hover{background:var(--orange-hover)!important;}
+.nav-burger{display:none;width:38px;height:38px;background:transparent;border:none;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0;}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--white);transition:transform .35s,opacity .25s,background .25s;border-radius:1px;}
+#nav.scrolled .nav-burger span{background:var(--ink);}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+.nav-burger.open span:nth-child(2){opacity:0;}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+
+/* ═══ HERO — SCROLL-DRIVEN VIDEO (Apple-style) ═══ */
+#hero-scroll{position:relative;height:500vh;background:var(--black);padding:0!important;margin:0;}
+.hero-sticky{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--black);}
+#hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;background:var(--black);}
+.hero-vignette{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at center,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 70%,rgba(0,0,0,.75) 100%),linear-gradient(to bottom,rgba(0,0,0,.45) 0%,rgba(0,0,0,.1) 30%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.75) 100%);pointer-events:none;}
+.hero-overlay{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+/* per-scene directional backdrop — appears behind text for legibility */
+.hero-scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:0 6vw;opacity:0;will-change:transform,opacity;}
+.hero-scene::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to right,rgba(0,0,0,.78) 0%,rgba(0,0,0,.45) 45%,transparent 75%);}
+.hero-scene-center{align-items:center;text-align:center;}
+.hero-scene-center::before{background:radial-gradient(ellipse at center,rgba(0,0,0,.7) 0%,rgba(0,0,0,.4) 45%,transparent 80%);}
+.hero-scene[data-scene="3"]::before{background:linear-gradient(to left,rgba(0,0,0,.78) 0%,rgba(0,0,0,.45) 45%,transparent 75%);}
+.hero-scene h1, .hero-scene h2, .hero-scene .hero-body, .hero-scene .hero-eyebrow{text-shadow:0 2px 24px rgba(0,0,0,.45);}
+.hero-eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--orange);margin-bottom:1.6rem;display:flex;align-items:center;gap:.9rem;}
+.hero-eyebrow::before{content:'';width:38px;height:1px;background:var(--orange);}
+.hero-scene-center .hero-eyebrow{justify-content:center;}
+.hero-h1{font-family:var(--font-d);font-size:clamp(3.4rem,8vw,9rem);line-height:.9;letter-spacing:.01em;text-transform:uppercase;color:var(--white);max-width:14ch;}
+.hero-h1 em{font-style:normal;color:var(--orange);}
+.hero-h1 .sub{font-family:var(--font-b);font-weight:300;font-size:.28em;letter-spacing:.16em;display:block;margin-bottom:.3em;text-transform:none;color:rgba(255,255,255,.55);}
+.hero-h2{font-family:var(--font-d);font-size:clamp(2.6rem,6vw,6rem);line-height:.95;text-transform:uppercase;color:var(--white);max-width:18ch;}
+.hero-h2 em{font-style:normal;color:var(--orange);}
+.hero-body{margin-top:1.6rem;font-size:1.02rem;color:rgba(255,255,255,.65);max-width:480px;line-height:1.75;}
+.hero-cta-row{margin-top:2.4rem;display:flex;gap:1.2rem;align-items:center;pointer-events:auto;}
+
+/* scroll cue */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:.6rem;pointer-events:none;}
+.scroll-line{width:1px;height:34px;background:linear-gradient(to bottom,var(--orange),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+.scroll-txt{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+@keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:1;}50%{transform:scaleY(.4);opacity:.4;}}
+
+/* progress bar */
+.hero-progress{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);z-index:6;}
+.hero-progress-fill{height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left center;}
+
+/* mobile / reduced motion fallback */
+.hero-fallback{display:none;position:relative;height:100vh;min-height:600px;background:var(--black) center/cover no-repeat;}
+.hero-fallback::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.2));}
+.hero-fallback .hero-scene{opacity:1;z-index:2;}
+
+/* BUTTONS */
+.btn-orange{background:var(--orange);color:var(--white);padding:.88rem 2.2rem;text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;transition:background .3s,transform .2s;display:inline-block;}
+.btn-orange:hover{background:var(--orange-hover);transform:translateY(-1px);}
+.btn-ghost-white{color:rgba(255,255,255,.6);text-decoration:none;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem;transition:color .25s;}
+.btn-ghost-white:hover{color:var(--white);}
+.btn-ghost-white::after{content:'→';}
+.btn-ghost-dark{color:var(--ink);text-decoration:none;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem;transition:color .25s;border-bottom:1px solid var(--border-dark);padding-bottom:2px;}
+.btn-ghost-dark:hover{color:var(--orange);border-color:var(--orange);}
+.btn-ghost-dark::after{content:'→';}
+
+/* STATS */
+#stats{background:var(--orange);display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:1.8rem 1.5rem;text-align:center;border-right:1px solid rgba(255,255,255,.2);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:var(--font-d);font-size:3rem;color:var(--white);line-height:1;}
+.stat-l{font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:.35rem;}
+
+/* SECTIONS */
+section{padding:6rem 3.5rem;}
+.sec-eye{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;}
+.sec-eye::before{content:'';width:26px;height:1px;background:var(--orange);}
+.sec-h2{font-family:var(--font-d);font-size:clamp(2.6rem,4.5vw,4.5rem);line-height:.95;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);}
+.sec-body{color:var(--muted);font-size:.96rem;line-height:1.85;}
+
+/* INTRO */
+#intro{background:var(--off-white);display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;}
+.intro-imgs{position:relative;height:520px;}
+.intro-img-main{position:absolute;inset:0;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(17,17,17,.12);}
+.intro-img-main img{width:100%;height:100%;object-fit:cover;}
+.intro-badge{position:absolute;bottom:-16px;right:-16px;background:var(--orange);padding:1.2rem 1.6rem;border-radius:4px;z-index:5;box-shadow:0 8px 28px rgba(227,6,19,.4);}
+.intro-badge-num{font-family:var(--font-d);font-size:2rem;color:var(--white);line-height:1;}
+.intro-badge-lbl{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:.3rem;}
+.intro-img-float{position:absolute;top:-20px;left:-20px;width:190px;height:140px;border-radius:4px;overflow:hidden;border:4px solid var(--white);z-index:5;box-shadow:0 8px 24px rgba(17,17,17,.1);}
+.intro-img-float img{width:100%;height:100%;object-fit:cover;}
+.intro-text p{margin-bottom:1rem;}
+.intro-text strong{color:var(--ink);font-weight:500;}
+
+/* WORK — tighter, masonry-feel */
+#work{background:var(--white);}
+.work-hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;}
+/* Hero card — tall feature */
+.gallery-hero{position:relative;width:100%;height:480px;overflow:hidden;border-radius:4px;cursor:pointer;margin-bottom:.6rem;}
+.gallery-hero img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,1,.36,1);}
+.gallery-hero:hover img{transform:scale(1.04);}
+.gallery-hero .proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.9) 0%,rgba(17,17,17,.15) 50%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:2.2rem;}
+.proj-tag{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem;}
+.proj-name{font-family:var(--font-d);font-size:2.2rem;line-height:1;text-transform:uppercase;letter-spacing:.02em;color:var(--white);}
+.proj-sub{font-size:.8rem;color:rgba(255,255,255,.45);margin-top:.4rem;}
+.proj-reveal{margin-top:.8rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s;display:inline-flex;align-items:center;gap:.4rem;}
+.proj-reveal::after{content:'→';}
+.gallery-hero:hover .proj-reveal{opacity:1;transform:none;}
+/* 3-col grid */
+.gallery-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.6rem;}
+/* 2-col grid */
+.gallery-grid2{display:grid;grid-template-columns:2fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+.proj-card{position:relative;overflow:hidden;border-radius:4px;cursor:pointer;background:var(--off-white);}
+.proj-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s cubic-bezier(.22,1,.36,1);}
+.proj-card:hover img{transform:scale(1.06);}
+.proj-card .proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.85) 0%,rgba(17,17,17,.08) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;}
+.proj-card .proj-name{font-size:1.25rem;}
+.proj-card.tall{min-height:340px;}
+.proj-card.med{min-height:240px;}
+
+/* BRANDS */
+#brands{background:var(--off-white);padding:3rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;}
+.brands-lbl{text-align:center;font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted-light);margin-bottom:2rem;}
+.brands-wrap{overflow:hidden;mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%);}
+.brands-track{display:flex;gap:3.5rem;animation:brandScroll 28s linear infinite;width:max-content;}
+.brands-track:hover{animation-play-state:paused;}
+@keyframes brandScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.brand-chip{font-family:var(--font-d);font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;color:var(--border-dark);flex-shrink:0;white-space:nowrap;display:flex;align-items:center;gap:.9rem;transition:color .3s;cursor:default;}
+.brand-chip::before{content:'◆';font-size:.32rem;color:var(--orange);}
+.brand-chip:hover{color:var(--ink);}
+
+/* SERVICES */
+#services{background:var(--white);}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem;}
+.svc-card{background:var(--white);padding:2rem 1.6rem;position:relative;overflow:hidden;transition:background .35s;}
+.svc-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .4s ease;}
+.svc-card:hover::after{transform:scaleX(1);}
+.svc-card:hover{background:var(--orange-pale);}
+.svc-n{font-family:var(--font-d);font-size:3.2rem;color:rgba(227,6,19,.1);line-height:1;margin-bottom:.6rem;transition:color .35s;}
+.svc-card:hover .svc-n{color:rgba(227,6,19,.28);}
+.svc-name{font-family:var(--font-d);font-size:1.3rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.7rem;color:var(--ink);}
+.svc-items{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+.svc-items li{font-size:.8rem;color:var(--muted);padding-left:.9rem;position:relative;}
+.svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
+
+/* PROCESS */
+#process{background:var(--off-white);padding-top:6rem;padding-bottom:0;}
+.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3.5rem;padding-bottom:6rem;}
+.process-imgs{display:flex;flex-direction:column;gap:.6rem;}
+.process-imgs img{width:100%;border-radius:4px;display:block;box-shadow:0 4px 16px rgba(17,17,17,.07);}
+.pstep{padding:1.4rem 0;border-bottom:1px solid var(--border);}
+.pstep:last-child{border-bottom:none;}
+.pstep-num{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem;}
+.pstep-name{font-family:var(--font-d);font-size:1.35rem;text-transform:uppercase;margin-bottom:.5rem;color:var(--ink);}
+.pstep-body{font-size:.83rem;color:var(--muted);line-height:1.75;}
+.pstep-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.7rem;}
+.ptag{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:var(--orange-pale);border:1px solid var(--orange-mid);padding:.2rem .6rem;border-radius:2px;}
+
+/* CASE STUDY — tighter, editorial, not overwhelming */
+#casestudy{background:var(--warm-white);padding:0;}
+.cs-intro{padding:5.5rem 3.5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.cs-tag{display:inline-block;background:var(--orange-pale);border:1px solid var(--orange-mid);color:var(--orange);padding:.3rem .9rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;border-radius:2px;margin-bottom:1.2rem;}
+.cs-body{color:var(--muted);font-size:.9rem;line-height:1.85;margin-top:1rem;}
+.cs-overview-img img{width:100%;display:block;border-radius:4px;box-shadow:0 12px 40px rgba(17,17,17,.1);}
+/* Phase bars — black accent */
+.cs-phase{background:var(--black);padding:1.6rem 3.5rem;display:flex;align-items:center;gap:1.5rem;}
+.cs-phase-label{font-family:var(--font-d);font-size:1.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--white);}
+.cs-phase-num{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);}
+/* TIGHTER gallery strips — images never full-screen tall */
+.cs-strip{display:grid;gap:.5rem;padding:0 3.5rem 2rem;}
+.cs-strip.cols4{grid-template-columns:repeat(4,1fr);}
+.cs-strip.cols3{grid-template-columns:repeat(3,1fr);}
+.cs-strip.cols2{grid-template-columns:1fr 1fr;}
+.cs-strip.cols2l{grid-template-columns:1.6fr 1fr;}
+.cs-strip.cols1{grid-template-columns:1fr;}
+/* All images capped — no more full-screen tall images */
+.cs-strip img{
+  width:100%;display:block;border-radius:4px;
+  object-fit:cover;
+  box-shadow:0 3px 12px rgba(17,17,17,.07);
+  height:220px;  /* DEFAULT cap — compact */
+}
+.cs-strip img.tall{height:320px;}
+.cs-strip img.short{height:160px;}
+.cs-strip img.auto-h{height:auto;max-height:420px;}  /* only for full-width single doc sheets */
+.cs-caption{padding:0 3.5rem .8rem;font-size:.75rem;color:var(--muted-light);font-style:italic;}
+.cs-text-block{padding:1.5rem 3.5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.cs-text-block p{font-size:.86rem;color:var(--muted);line-height:1.85;}
+.cs-text-h{font-family:var(--font-d);font-size:1.35rem;text-transform:uppercase;margin-bottom:.7rem;color:var(--ink);}
+.cs-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:1.8rem;}
+.cs-metric{padding:1.1rem 1.2rem;background:var(--warm-white);}
+.cs-metric-num{font-family:var(--font-d);font-size:1.8rem;color:var(--orange);}
+.cs-metric-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+
+/* TEAM */
+#team{background:var(--white);}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8rem;margin-top:3rem;}
+.team-card{cursor:pointer;}
+.team-photo{aspect-ratio:3/4;overflow:hidden;border-radius:4px;position:relative;box-shadow:0 8px 24px rgba(17,17,17,.08);}
+.team-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1),filter .4s;}
+.team-card:hover .team-photo img{transform:scale(1.05);filter:brightness(.8);}
+.team-hover-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(227,6,19,.75) 0%,transparent 55%);opacity:0;transition:opacity .4s;}
+.team-card:hover .team-hover-overlay{opacity:1;}
+.team-name{font-family:var(--font-d);font-size:1.2rem;text-transform:uppercase;letter-spacing:.04em;margin-top:.8rem;color:var(--ink);}
+.team-role{font-size:.73rem;color:var(--orange);letter-spacing:.1em;margin-top:.15rem;}
+
+/* CTA */
+#cta{background:var(--black);padding:5.5rem 3.5rem;text-align:center;position:relative;overflow:hidden;}
+#cta::before{content:'FRANKNDESIGN';position:absolute;font-family:var(--font-d);font-size:16rem;color:rgba(255,255,255,.025);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;letter-spacing:.1em;}
+.cta-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,5.8rem);text-transform:uppercase;line-height:.95;position:relative;z-index:1;margin-bottom:1rem;color:var(--white);}
+.cta-h2 em{font-style:normal;color:var(--orange);}
+.cta-sub{font-size:.95rem;color:rgba(255,255,255,.5);position:relative;z-index:1;margin-bottom:2.2rem;max-width:460px;margin-left:auto;margin-right:auto;}
+.btn-cta{background:var(--orange);color:var(--white);padding:.95rem 2.8rem;font-family:var(--font-b);font-size:.8rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;border:none;cursor:pointer;position:relative;z-index:1;transition:background .3s,transform .2s,box-shadow .3s;text-decoration:none;display:inline-block;}
+.btn-cta:hover{background:var(--orange-hover);transform:translateY(-2px);box-shadow:0 12px 38px rgba(227,6,19,.45);}
+
+/* FOOTER */
+footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.5rem 3.5rem 2rem;}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-logo-img{height:42px;width:auto;display:block;margin-bottom:1rem;}
+.footer-tag{font-size:.82rem;color:var(--muted);line-height:1.6;max-width:240px;}
+.footer-col-h{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-light);margin-bottom:1.1rem;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.83rem;transition:color .25s;}
+.footer-links a:hover{color:var(--orange);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-size:.72rem;color:var(--muted-light);}
+.socials{display:flex;gap:.6rem;}
+.soc{width:32px;height:32px;border:1px solid var(--border-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:.7rem;transition:border-color .25s,color .25s,background .25s;}
+.soc:hover{border-color:var(--orange);color:var(--white);background:var(--orange);}
+
+/* LIGHTBOX */
+#lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(17,17,17,.96);justify-content:center;align-items:center;}
+#lb.open{display:flex;}
+#lb img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:3px;}
+#lb-close{position:absolute;top:1.5rem;right:2rem;color:var(--white);font-size:2rem;cursor:pointer;opacity:.5;transition:opacity .2s;background:none;border:none;}
+#lb-close:hover{opacity:1;}
+#lb-prev,#lb-next{position:absolute;top:50%;transform:translateY(-50%);font-size:2.5rem;color:rgba(255,255,255,.35);cursor:pointer;background:none;border:none;padding:1rem;transition:color .2s;user-select:none;}
+#lb-prev{left:1rem;}#lb-next{right:1rem;}
+#lb-prev:hover,#lb-next:hover{color:var(--orange);}
+#lb-caption{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:.78rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-align:center;}
+
+/* PRELOADER */
+#preloader{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;transition:opacity .7s ease,visibility .7s;}
+#preloader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+#preloader .pre-logo{height:54px;width:auto;opacity:0;animation:preFadeIn .7s ease .1s forwards;filter:brightness(0) invert(1);}
+#preloader .pre-bar{width:200px;height:2px;background:rgba(255,255,255,.12);overflow:hidden;border-radius:1px;opacity:0;animation:preFadeIn .7s ease .3s forwards;}
+#preloader .pre-bar-fill{height:100%;background:var(--orange);width:0%;transition:width .25s ease-out;}
+#preloader .pre-pct{font-size:.62rem;letter-spacing:.32em;color:rgba(255,255,255,.45);text-transform:uppercase;opacity:0;animation:preFadeIn .7s ease .5s forwards;font-family:var(--font-b);}
+@keyframes preFadeIn{to{opacity:1;}}
+html.preloading,body.preloading{overflow:hidden;}
+
+@media(max-width:900px){
+  #nav{padding:.9rem 1.5rem;}
+  .nav-burger{display:flex;z-index:300;}
+  .nav-links{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--black);flex-direction:column;justify-content:center;align-items:center;gap:1.8rem;padding:2rem;z-index:250;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .35s,visibility .35s,transform .4s ease;}
+  .nav-links.open{opacity:1;visibility:visible;transform:translateY(0);}
+  .nav-links li{width:100%;text-align:center;}
+  .nav-links a{font-size:1.05rem;letter-spacing:.16em;color:rgba(255,255,255,.85)!important;display:inline-block;padding:.4rem 0;}
+  .nav-links .nav-cta{padding:.75rem 2.4rem;font-size:.85rem;display:inline-block;margin-top:.6rem;}
+  /* Hero on mobile: same scroll-scrub as desktop, shorter scroll distance */
+  #hero-scroll{height:350vh!important;}
+  .hero-scene[data-scene="3"]{align-items:center!important;text-align:center!important;padding:0 1.5rem!important;}
+  .hero-scene[data-scene="3"] .hero-eyebrow{justify-content:center!important;}
+  .hero-scene[data-scene="3"] .hero-h2{text-align:center!important;}
+  .hero-scene{padding:0 1.5rem!important;}
+  .hero-h1{font-size:clamp(2.6rem,12vw,4.5rem)!important;}
+  .hero-h2{font-size:clamp(2rem,9vw,3.5rem)!important;}
+  section{padding:4rem 1.5rem;}
+  /* Stats 2x2 on mobile */
+  #stats{grid-template-columns:1fr 1fr;}
+  .stat{padding:1.4rem 1rem;}
+  .stat:nth-child(2){border-right:none;}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,.2);}
+  .stat-n{font-size:2.4rem;}
+  /* Intro: float image smaller on mobile, badge re-positioned */
+  .intro-imgs{height:380px;}
+  .intro-img-float{width:130px;height:96px;top:-12px;left:-8px;}
+  .intro-badge{padding:.9rem 1.1rem;bottom:-12px;right:-8px;}
+  .intro-badge-num{font-size:1.5rem;}
+  /* Work hero card a bit shorter */
+  .gallery-hero{height:360px;}
+  /* Case study intro & 4-col strips collapse safely */
+  .cs-intro .sec-h2, .work-hdr .sec-h2, .sec-h2{font-size:clamp(2rem,8vw,3.2rem);}
+  .work-hdr{flex-direction:column;align-items:flex-start;gap:1rem;}
+  /* Services 1 col on very narrow */
+  @media(max-width:540px){.svc-grid{grid-template-columns:1fr;}.team-grid{grid-template-columns:1fr 1fr;}#stats .stat-l{font-size:.58rem;}}
+  #intro,#process .process-grid,.cs-intro{grid-template-columns:1fr!important;gap:2.5rem;}
+  .gallery-grid3{grid-template-columns:1fr 1fr;}
+  .gallery-grid2{grid-template-columns:1fr;}
+  .team-grid{grid-template-columns:1fr 1fr;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
+  .svc-grid{grid-template-columns:1fr 1fr;}
+  .cs-strip.cols4{grid-template-columns:1fr 1fr;}
+  .cs-strip.cols3{grid-template-columns:1fr 1fr;}
+  .cs-text-block{grid-template-columns:1fr;gap:1.5rem;padding:1.5rem;}
+  .cs-strip{padding:0 1.5rem 1.5rem;}
+  .cs-phase{padding:1.2rem 1.5rem;}
+  .cs-caption{padding:0 1.5rem .6rem;}
+  .cs-intro{padding:3rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <img class="pre-logo" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/>
+  <div class="pre-bar"><div class="pre-bar-fill" id="preBarFill"></div></div>
+  <div class="pre-pct" id="prePct">Loading 0%</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lb" role="dialog" aria-modal="true">
+  <button id="lb-close" aria-label="Close">×</button>
+  <button id="lb-prev" aria-label="Previous">‹</button>
+  <img id="lb-img" src="" alt=""/>
+  <button id="lb-next" aria-label="Next">›</button>
+  <div id="lb-caption"></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><img class="nav-logo-img" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/></a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#casestudy">Case Study</a></li>
+    <li><a href="#team">Studio</a></li>
+    <li><a href="https://frankndesign.com/contact/" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO — SCROLL-DRIVEN VIDEO (Apple-style) ═══ -->
+<section id="hero-scroll">
+  <div class="hero-sticky">
+    <canvas id="hero-canvas" width="1920" height="1080"></canvas>
+    <div class="hero-vignette"></div>
+
+    <div class="hero-progress"><div class="hero-progress-fill"></div></div>
+
+    <div class="hero-overlay">
+
+      <div class="hero-scene" data-scene="1">
+        <div class="hero-eyebrow">Virtual Production · Themed Entertainment</div>
+        <h1 class="hero-h1">
+          <span class="sub">Where imagination</span>
+          Becomes<br><em>Reality</em>
+        </h1>
+        <p class="hero-body">Award-winning virtual production for theme parks, hospitality, and attractions worldwide.</p>
+      </div>
+
+      <div class="hero-scene hero-scene-center" data-scene="2">
+        <div class="hero-eyebrow">Our Approach</div>
+        <h2 class="hero-h2">One model.<br><em>Every discipline.</em></h2>
+        <p class="hero-body" style="margin-top:1.4rem;text-align:center;">From first sketch to final fabrication — designers, architects, and engineers working from one truth.</p>
+      </div>
+
+      <div class="hero-scene" data-scene="3" style="align-items:flex-end;text-align:right;">
+        <div class="hero-eyebrow" style="justify-content:flex-end;">The Advantage</div>
+        <h2 class="hero-h2" style="text-align:right;">Anticipate issues<br>before anything<br><em>is ever built.</em></h2>
+      </div>
+
+      <div class="hero-scene hero-scene-center" data-scene="4">
+        <div class="hero-eyebrow">Let's Build</div>
+        <h2 class="hero-h2">Projects that<br><em>draw people together.</em></h2>
+        <div class="hero-cta-row" style="margin-top:2.4rem;justify-content:center;">
+          <a href="#work" class="btn-orange">View Our Work</a>
+          <a href="#process" class="btn-ghost-white">Our Process</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="scroll-hint" id="scrollHint">
+      <span class="scroll-txt">Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat reveal"><div class="stat-n">20+</div><div class="stat-l">Years Combined Experience</div></div>
+  <div class="stat reveal d1"><div class="stat-n">50+</div><div class="stat-l">Projects Delivered</div></div>
+  <div class="stat reveal d2"><div class="stat-n">3</div><div class="stat-l">Industry Awards</div></div>
+  <div class="stat reveal d3"><div class="stat-n">100%</div><div class="stat-l">On-Time Coordination</div></div>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="intro-text reveal-l">
+    <div class="sec-eye">About FrankNDesign</div>
+    <h2 class="sec-h2" style="margin-bottom:1.4rem;">We Build The Blueprint<br>For Wonder</h2>
+    <p class="sec-body">We create <strong>collaborative, comprehensive, multipurpose 3D models and documentation</strong> that bring your ideas to life. Our detailed, information-rich content aids architects, engineers, and general contractors in understanding the creative design intent.</p>
+    <p class="sec-body" style="margin-top:1rem;">Our integrated models allow teams to assess a concept from multiple perspectives and <strong>anticipate issues before anything is ever built.</strong></p>
+    <div style="margin-top:2rem;"><a href="https://frankndesign.com/contact/" class="btn-orange">Start a Project</a></div>
+  </div>
+  <div class="intro-imgs reveal-r">
+    <div class="intro-img-float">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" alt="Hagrid's Magical Creatures — Universal Studios" loading="lazy"/>
+    </div>
+    <div class="intro-img-main">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/487ba2bb-d5e0-45ad-abee-af444344a638_rw_1920.webp" alt="Multi-discipline integrated 3D model" loading="lazy"/>
+    </div>
+    <div class="intro-badge">
+      <div class="intro-badge-num">98.4%</div>
+      <div class="intro-badge-lbl">Coordination Accuracy</div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="work-hdr">
+    <div>
+      <div class="sec-eye reveal">Featured Projects</div>
+      <h2 class="sec-h2 reveal d1">Award-Winning<br>Results</h2>
+    </div>
+    <a href="https://frankndesign.com/contact/" class="btn-ghost-dark reveal d2">Get in Touch</a>
+  </div>
+
+  <!-- Hagrid's hero card -->
+  <div class="gallery-hero lb-trigger reveal-scale" data-src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" data-cap="Hagrid's Magical Creatures Motorbike Adventure — Universal Studios Florida">
+    <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" alt="Hagrid's Magical Creatures Motorbike Adventure" loading="lazy"/>
+    <div class="proj-overlay">
+      <div class="proj-tag">Theme Park · Universal Studios Florida</div>
+      <div class="proj-name">Hagrid's Magical Creatures Motorbike Adventure</div>
+      <div class="proj-sub">Virtual production, show set documentation &amp; BIM coordination</div>
+      <div class="proj-reveal">View Gallery</div>
+    </div>
+  </div>
+
+  <!-- 3-col -->
+  <div class="gallery-grid3">
+    <div class="proj-card tall lb-trigger reveal" data-src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-2-768x513.webp" data-cap="Hagrid's — Detail">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-2-768x513.webp" alt="Hagrid's detail" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Universal Studios</div><div class="proj-name">Hagrid's — Detail</div></div>
+    </div>
+    <div class="proj-card tall lb-trigger reveal d1" data-src="https://frankndesign.com/wp-content/uploads/2026/03/Super-Nintendo-World-768x432.webp" data-cap="Super Nintendo World — Universal Studios Hollywood">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Super-Nintendo-World-768x432.webp" alt="Super Nintendo World" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Theme Park · Hollywood, CA</div><div class="proj-name">Super Nintendo World</div></div>
+    </div>
+    <div class="proj-card tall lb-trigger reveal d2" data-src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™BowserChallenge-768x482.webp" data-cap="Mario Kart™: Bowser's Challenge">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™BowserChallenge-768x482.webp" alt="Mario Kart Bowser's Challenge" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Attraction · Universal</div><div class="proj-name">Mario Kart™: Bowser's Challenge</div></div>
+    </div>
+  </div>
+
+  <!-- 2-col -->
+  <div class="gallery-grid2 reveal">
+    <div class="proj-card med lb-trigger" data-src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™-Bowsers-Challenge-768x488.webp" data-cap="Mario Kart™ — Interior Detail">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™-Bowsers-Challenge-768x488.webp" alt="Mario Kart interior" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Show Set Design</div><div class="proj-name">Mario Kart™ — Interior</div></div>
+    </div>
+    <div class="proj-card med lb-trigger" data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Projection-Mapped-3D-Printed-Model-768x538.webp" data-cap="View Boston — Projection Mapped 3D Printed Model">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Projection-Mapped-3D-Printed-Model-768x538.webp" alt="View Boston model" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Attraction · Boston, MA</div><div class="proj-name">View Boston — 3D Model</div></div>
+    </div>
+  </div>
+
+  <!-- 3-col -->
+  <div class="gallery-grid3">
+    <div class="proj-card med lb-trigger reveal" data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-768x545.webp" data-cap="View Boston — Tactile Cast Models">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-768x545.webp" alt="View Boston cast models" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Boston, MA</div><div class="proj-name">View Boston — Cast Models</div></div>
+    </div>
+    <div class="proj-card med lb-trigger reveal d1" data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-02-768x512.webp" data-cap="View Boston — Detail">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-02-768x512.webp" alt="View Boston detail" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Boston, MA</div><div class="proj-name">View Boston — Detail</div></div>
+    </div>
+    <div class="proj-card med lb-trigger reveal d2" data-src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-768x432.webp" data-cap="MSC Cruises — Robotron">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-768x432.webp" alt="MSC Cruises Robotron" loading="lazy"/>
+      <div class="proj-overlay"><div class="proj-tag">Cruise Entertainment</div><div class="proj-name">MSC Cruises — Robotron</div></div>
+    </div>
+  </div>
+
+  <!-- MSC hero card -->
+  <div class="gallery-hero lb-trigger reveal-scale" style="height:380px;" data-src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-02-768x512.webp" data-cap="MSC Cruises Robotron — Full View">
+    <img src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-02-768x512.webp" alt="MSC Cruises Robotron full" loading="lazy"/>
+    <div class="proj-overlay">
+      <div class="proj-tag">Cruise Ship Entertainment · MSC Cruises</div>
+      <div class="proj-name">Robotron — Full Experience</div>
+      <div class="proj-sub">End-to-end show set documentation and virtual production</div>
+      <div class="proj-reveal">View Gallery</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<div id="brands">
+  <div class="brands-lbl">Clients &amp; Partners We've Worked With</div>
+  <div class="brands-wrap">
+    <div class="brands-track">
+      <span class="brand-chip">Universal Studios</span><span class="brand-chip">MSC Cruises</span><span class="brand-chip">Nintendo</span><span class="brand-chip">Warner Bros</span><span class="brand-chip">View Boston</span><span class="brand-chip">Herschend Entertainment</span><span class="brand-chip">Thinkwell Group</span><span class="brand-chip">PGAV Destinations</span><span class="brand-chip">JRA</span><span class="brand-chip">BRC Imagination Arts</span><span class="brand-chip">Firefly Creative</span><span class="brand-chip">Adirondack Studios</span>
+      <span class="brand-chip">Universal Studios</span><span class="brand-chip">MSC Cruises</span><span class="brand-chip">Nintendo</span><span class="brand-chip">Warner Bros</span><span class="brand-chip">View Boston</span><span class="brand-chip">Herschend Entertainment</span><span class="brand-chip">Thinkwell Group</span><span class="brand-chip">PGAV Destinations</span><span class="brand-chip">JRA</span><span class="brand-chip">BRC Imagination Arts</span><span class="brand-chip">Firefly Creative</span><span class="brand-chip">Adirondack Studios</span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-eye reveal">What We Do</div>
+  <h2 class="sec-h2 reveal d1">Full Spectrum<br>Design Services</h2>
+  <p class="sec-body reveal d2" style="margin-top:1rem;max-width:600px;">FrankNDesign facilitates effective and efficient collaboration amongst all disciplines, enhances coordination, forecasts issues, and presents virtual time and money saving solutions before and during construction.</p>
+  <div class="svc-grid">
+    <div class="svc-card reveal"><div class="svc-n">01</div><div class="svc-name">Design</div><ul class="svc-items"><li>Themed Entertainment</li><li>Hospitality Design</li><li>Master Planning</li><li>Conceptual Visualization</li><li>Installation Design</li></ul></div>
+    <div class="svc-card reveal d1"><div class="svc-n">02</div><div class="svc-name">Production</div><ul class="svc-items"><li>Design Development</li><li>Schematic Design</li><li>Construction Documents</li><li>Shop Drawings</li><li>Existing Conditions Survey</li><li>Technology Systems Integration</li></ul></div>
+    <div class="svc-card reveal d2"><div class="svc-n">03</div><div class="svc-name">Project Leadership</div><ul class="svc-items"><li>Project Management</li><li>Production Management</li><li>Client Representation</li><li>Cross-Disciplinary Coordination</li><li>Creative Direction</li></ul></div>
+    <div class="svc-card reveal d3"><div class="svc-n">04</div><div class="svc-name">Process Implementation</div><ul class="svc-items"><li>BIM Management</li><li>BIM Support &amp; Training</li><li>BIM Standards Development</li><li>Clash Detection</li><li>Design &amp; Document Review</li><li>Field Installation Supervision</li></ul></div>
+    <div class="svc-card reveal d4"><div class="svc-n">05</div><div class="svc-name">Strategic Planning</div><ul class="svc-items"><li>Integration Planning</li><li>Talent &amp; Resource Management</li><li>Process Assessment</li><li>Subject Matter Expert Counsel</li><li>Interoperability Strategy</li></ul></div>
+    <div class="svc-card reveal d5"><div class="svc-n">06</div><div class="svc-name">Visualization</div><ul class="svc-items"><li>Real-Time Rendering</li><li>Animation &amp; Animatics</li><li>Marketing Visualization</li><li>On-Site Art Direction</li><li>Previsualization</li></ul></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="sec-eye reveal">How We Work</div>
+  <h2 class="sec-h2 reveal d1">Our Process Simplifies<br>Your Project</h2>
+  <p class="sec-body reveal d2" style="margin-top:1rem;max-width:600px;">We break down design silos and centralize project information into a single, accessible, data-rich virtual environment — so every discipline works from one truth.</p>
+  <div class="process-grid">
+    <div class="process-imgs reveal-l">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/eed4cb84-b12c-42e5-9e04-afb9629bdf9c_rw_1920.webp" alt="Integrated BIM model" loading="lazy"/>
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/569754cc-7057-4c53-8d93-63f19add37cc_rw_1920.webp" alt="Construction documents" loading="lazy"/>
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/3ca78901-f4a6-4389-9694-148d0308d24b_rw_600-1.gif" alt="Real-time model animation" loading="lazy"/>
+    </div>
+    <div class="reveal-r" style="padding-top:.5rem;">
+      <div class="pstep"><div class="pstep-num">01 — DISCOVER</div><div class="pstep-name">Research &amp; Strategy</div><div class="pstep-body">Deep-dive into project requirements, stakeholder goals, and creative intent. We establish scope, standards, and technical approach before any model begins.</div></div>
+      <div class="pstep"><div class="pstep-num">02 — MODEL</div><div class="pstep-name">Integrated 3D Build</div><div class="pstep-body">All disciplines centralized into a single, information-rich virtual environment — enabling accurate cost estimation and early conflict detection.</div><div class="pstep-tags"><span class="ptag">Revit</span><span class="ptag">BIM 360</span><span class="ptag">3ds Max</span><span class="ptag">Unreal Engine</span></div></div>
+      <div class="pstep"><div class="pstep-num">03 — COORDINATE</div><div class="pstep-name">Cross-Discipline Review</div><div class="pstep-body">Real-time clash detection surfaces and resolves issues before construction — reducing change orders and protecting creative intent.</div></div>
+      <div class="pstep"><div class="pstep-num">04 — DOCUMENT</div><div class="pstep-name">Construction Documentation</div><div class="pstep-body">Production-ready documents, shop drawings, and data-rich schedules — all from the same master model.</div></div>
+      <div class="pstep"><div class="pstep-num">05 — VISUALIZE</div><div class="pstep-name">Render &amp; Deliver</div><div class="pstep-body">The same model powers renderings, animations, and animatics for marketing or stakeholder presentations. Visualization and production are never siloed.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY: TOKYO STREETS — editorial, compact, no overwhelming tall images -->
+<section id="casestudy" style="padding:0;">
+
+  <div class="cs-intro">
+    <div class="reveal-l">
+      <span class="cs-tag">Case Study</span>
+      <div class="sec-eye">Featured Work</div>
+      <h2 class="sec-h2">Tokyo<br>Streets</h2>
+      <p class="cs-body">FrankNDesign developed "Tokyo Streets" to illustrate our full documentation process — from first-hand Tokyo research and conceptual sketches through fully-coordinated construction documentation models.</p>
+      <p class="cs-body" style="margin-top:.8rem;">This case study demonstrates the quality, resourcefulness, and expertise we bring to every client project.</p>
+      <div class="cs-metrics">
+        <div class="cs-metric"><div class="cs-metric-num">100+</div><div class="cs-metric-lbl">Unique Prop Sheets</div></div>
+        <div class="cs-metric"><div class="cs-metric-num">1</div><div class="cs-metric-lbl">Unified Master Model</div></div>
+        <div class="cs-metric"><div class="cs-metric-num">Multi</div><div class="cs-metric-lbl">Discipline Coordination</div></div>
+        <div class="cs-metric"><div class="cs-metric-num">Zero</div><div class="cs-metric-lbl">Scope Gaps</div></div>
+      </div>
+    </div>
+    <div class="cs-overview-img reveal-r">
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/85863320-f291-4ecb-9ff9-656c7cbcb609_rw_1200.webp" alt="Tokyo Streets overview" loading="lazy"/>
+    </div>
+  </div>
+
+  <!-- Phase 1 — 4 tight reference thumbnails -->
+  <div class="cs-phase reveal"><div class="cs-phase-num">Phase 01</div><div class="cs-phase-label">Research &amp; Reference Imagery</div></div>
+  <div class="cs-strip cols4 reveal d1">
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/f1dc551d-7eae-410c-98d8-d6eceda5737f_rw_600.webp" alt="Tokyo reference 1" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/f1dc551d-7eae-410c-98d8-d6eceda5737f_rw_600.webp" data-cap="Tokyo Reference Photography"/>
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/a88b3c7b-66e0-46a5-a9f0-49e9bf472d3b_rw_600.webp" alt="Tokyo reference 2" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/a88b3c7b-66e0-46a5-a9f0-49e9bf472d3b_rw_600.webp" data-cap="Tokyo Reference Photography"/>
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/1ca9db92-18fd-40c3-bae4-e65101393d4e_rw_600.webp" alt="Tokyo reference 3" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/1ca9db92-18fd-40c3-bae4-e65101393d4e_rw_600.webp" data-cap="Tokyo Reference Photography"/>
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/43b68a86-d8ff-452f-a65a-c756e0cacbad_rw_600.webp" alt="Tokyo reference 4" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/43b68a86-d8ff-452f-a65a-c756e0cacbad_rw_600.webp" data-cap="Tokyo Reference Photography"/>
+  </div>
+  <p class="cs-caption">First-hand photography from Japan — distilling the character of Tokyo into discrete design components</p>
+
+  <!-- Phase 2 — concept art: 1 wide + 2 detail -->
+  <div class="cs-phase reveal"><div class="cs-phase-num">Phase 02</div><div class="cs-phase-label">Concept Artwork</div></div>
+  <div class="cs-strip cols3 reveal d1">
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/a8fd892b-5f48-482c-9c56-4ab039abbffc_rw_600.webp" alt="Concept art 1" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/a8fd892b-5f48-482c-9c56-4ab039abbffc_rw_600.webp" data-cap="Concept Art — In-house sketches"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/13c51611-0ffc-49b0-8893-a615d279448c_rw_600.webp" alt="Concept art 2" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/13c51611-0ffc-49b0-8893-a615d279448c_rw_600.webp" data-cap="Concept Art — Detail"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/19131b18-9f74-4a3d-8909-41b4acb77681_rw_600.webp" alt="Concept art 3" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/19131b18-9f74-4a3d-8909-41b4acb77681_rw_600.webp" data-cap="Concept Art — Detail"/>
+  </div>
+  <div class="cs-strip cols1 reveal" style="padding-top:0;">
+    <img class="auto-h lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/8613ecbb-189b-4725-b711-186bc7c745f7_rw_1920.webp" alt="Concept art wide" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/8613ecbb-189b-4725-b711-186bc7c745f7_rw_1920.webp" data-cap="Tokyo Streets — Full Concept Elevation"/>
+  </div>
+  <p class="cs-caption">Hand &amp; digital drawings by in-house artists — providing creative direction for the full documentation process</p>
+
+  <!-- Phase 3 — 3D model: side-by-side with text, then key model views -->
+  <div class="cs-phase reveal"><div class="cs-phase-num">Phase 03</div><div class="cs-phase-label">Comprehensive 3D Digital Model</div></div>
+  <div class="cs-text-block reveal">
+    <div><div class="cs-text-h">One model. Every discipline.</div><p>We design, model, and document each component in one place — considering both micro and macro scales so that the creative vision is followed and executed on site.</p></div>
+    <div><div class="cs-text-h">Collaborate across all disciplines in real-time</div><p>Through advanced BIM, our models allow teams to identify conflicts, coordinate production, and visualize trust — before a single piece is built.</p></div>
+  </div>
+  <div class="cs-strip cols2 reveal d1">
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/21361c61-db5d-451b-af48-78c2162570de_rw_1920.webp" alt="Isometric view" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/21361c61-db5d-451b-af48-78c2162570de_rw_1920.webp" data-cap="Isometric view of Tokyo Streets model"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/1f3e72b9-b8cc-4e2b-a6ad-8d477763e016_rw_1920.webp" alt="Site plan" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/1f3e72b9-b8cc-4e2b-a6ad-8d477763e016_rw_1920.webp" data-cap="Tokyo Streets — Site Plan"/>
+  </div>
+  <div class="cs-strip cols2 reveal" style="padding-top:.5rem;">
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/487ba2bb-d5e0-45ad-abee-af444344a638_rw_1920.webp" alt="Multidisciplinary model" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/487ba2bb-d5e0-45ad-abee-af444344a638_rw_1920.webp" data-cap="Multidisciplinary model — coordination &amp; planning"/>
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/78a20869-812a-414e-bf8f-9903254d3558.gif" alt="3D model animation" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/78a20869-812a-414e-bf8f-9903254d3558.gif" data-cap="Live 3D model animation — Tokyo Streets"/>
+  </div>
+  <div class="cs-strip cols1 reveal" style="padding-top:.5rem;">
+    <img class="auto-h lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/a092356f-b9bb-412a-ae0c-096915de36b8_rw_1200-1.gif" alt="Scope animation" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/a092356f-b9bb-412a-ae0c-096915de36b8_rw_1200-1.gif" data-cap="Project-wide scope interactions — animated"/>
+  </div>
+  <p class="cs-caption">Proprietary content assembled in AEC industry standard software — all disciplines in a single coordinated model</p>
+
+  <!-- Phase 4 — documentation: 3 key images, compact -->
+  <div class="cs-phase reveal"><div class="cs-phase-num">Phase 04</div><div class="cs-phase-label">Documentation — Better Data. Better Decisions.</div></div>
+  <div class="cs-strip cols3 reveal d1">
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/392e36b0-b247-4223-a8e0-78081925c64d_rw_1200.webp" alt="Data schedules" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/392e36b0-b247-4223-a8e0-78081925c64d_rw_1200.webp" data-cap="Data-rich model schedules — real-time decision support"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/813f7ea8-3c00-4128-ab70-91bd140fa1aa_rw_1200.webp" alt="Prop elements" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/813f7ea8-3c00-4128-ab70-91bd140fa1aa_rw_1200.webp" data-cap="Prop elements displayed for a richly themed storefront"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/01b841a4-af4b-4819-909d-6b78222c250c_rw_1920.webp" alt="Documentation sheet" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/01b841a4-af4b-4819-909d-6b78222c250c_rw_1920.webp" data-cap="Construction documentation sheet"/>
+  </div>
+  <div class="cs-strip cols2 reveal" style="padding-top:.5rem;">
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/a20e159b-5df2-4d90-bea8-51a5952ccca5_rw_1920-1.gif" alt="Model updates" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/a20e159b-5df2-4d90-bea8-51a5952ccca5_rw_1920-1.gif" data-cap="Intelligent models updated instantly for any design intent"/>
+    <img class="lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/4eee28d0-0e4d-43ff-810e-de1830b42a55_rw_1920.webp" alt="Schedules" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/4eee28d0-0e4d-43ff-810e-de1830b42a55_rw_1920.webp" data-cap="Schedules using 3D modeled elements for clear communication"/>
+  </div>
+  <div class="cs-strip cols1 reveal" style="padding-top:.5rem;padding-bottom:0;">
+    <img class="auto-h lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/9529a78f-8b73-4fa5-af5c-df92e5fd18f5_rw_1920.webp" alt="Full doc sheet" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/9529a78f-8b73-4fa5-af5c-df92e5fd18f5_rw_1920.webp" data-cap="Full documentation sheet set — Tokyo Streets"/>
+  </div>
+  <p class="cs-caption">2D and 3D drawing methods combined — so clients, creative teams, and fabricators all agree on the final design</p>
+
+  <!-- Phase 5 — visualization: 2x2 compact -->
+  <div class="cs-phase reveal"><div class="cs-phase-num">Phase 05</div><div class="cs-phase-label">Visualization — One Model, Infinite Views</div></div>
+  <p class="cs-caption" style="padding-bottom:.5rem;">The same documentation models leverage for renderings, animations, and marketing assets — visualization and production are never siloed.</p>
+  <div class="cs-strip cols2 reveal d1">
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/c22f63d6-9bb6-4494-b01e-d9967e593703_rw_1200.webp" alt="Render 1" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/c22f63d6-9bb6-4494-b01e-d9967e593703_rw_1200.webp" data-cap="Tokyo Streets — Visualization Render"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/e99d9bbc-eb3b-4203-968e-6044de4d9aad_rw_1200.webp" alt="Render 2" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/e99d9bbc-eb3b-4203-968e-6044de4d9aad_rw_1200.webp" data-cap="Tokyo Streets — Visualization Render"/>
+  </div>
+  <div class="cs-strip cols2 reveal" style="padding-top:.5rem;padding-bottom:4rem;">
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/ada4f475-0d44-4381-8502-6dafdbecd299_rw_1920.webp" alt="Render 3" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/ada4f475-0d44-4381-8502-6dafdbecd299_rw_1920.webp" data-cap="Tokyo Streets — Visualization Render"/>
+    <img class="tall lb-trigger" src="https://frankndesign.com/wp-content/uploads/2026/03/ae7fb5c0-48e0-4660-9a59-a334e47397c8_rw_1920.webp" alt="Render 4" loading="lazy" data-src="https://frankndesign.com/wp-content/uploads/2026/03/ae7fb5c0-48e0-4660-9a59-a334e47397c8_rw_1920.webp" data-cap="Tokyo Streets — Visualization Render"/>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="sec-eye reveal">The Studio</div>
+  <h2 class="sec-h2 reveal d1">Leadership Team</h2>
+  <p class="sec-body reveal d2" style="margin-top:.9rem;max-width:540px;">A multidisciplinary team of designers, architects, BIM specialists, and production managers with decades of combined experience in themed entertainment and hospitality.</p>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-photo"><img src="assets/francisco.webp" alt="Francisco J. Núñez" loading="lazy"/><div class="team-hover-overlay"></div></div>
+      <div class="team-name">Francisco J. Núñez</div><div class="team-role">Principal &amp; Creative Director</div>
+    </div>
+    <div class="team-card reveal d1">
+      <div class="team-photo"><img src="assets/jeremy.webp" alt="Jeremy Grunert" loading="lazy"/><div class="team-hover-overlay"></div></div>
+      <div class="team-name">Jeremy Grunert</div><div class="team-role">Director of Production</div>
+    </div>
+    <div class="team-card reveal d2">
+      <div class="team-photo"><img src="assets/carianne.webp" alt="Carianne DePasqua" loading="lazy"/><div class="team-hover-overlay"></div></div>
+      <div class="team-name">Carianne DePasqua</div><div class="team-role">Design Lead</div>
+    </div>
+    <div class="team-card reveal d3">
+      <div class="team-photo"><img src="assets/patrick.webp" alt="Patrick Witthaus" loading="lazy"/><div class="team-hover-overlay"></div></div>
+      <div class="team-name">Patrick Witthaus</div><div class="team-role">BIM Manager</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2 class="cta-h2 reveal">Ready to Build<br><em>Something Legendary?</em></h2>
+  <p class="cta-sub reveal d1">Let's talk about how FrankNDesign can bring your next themed entertainment or attractions project from concept to reality.</p>
+  <a href="https://frankndesign.com/contact/" class="btn-cta reveal d2">Start the Conversation →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <img class="footer-logo-img" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/>
+      <p class="footer-tag">Leaders in virtual production and documentation for projects that draw people together.</p>
+    </div>
+    <div>
+      <div class="footer-col-h">Services</div>
+      <ul class="footer-links"><li><a href="#services">Design</a></li><li><a href="#services">Virtual Production</a></li><li><a href="#services">BIM Management</a></li><li><a href="#services">Visualization</a></li><li><a href="#services">Strategic Planning</a></li></ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Studio</div>
+      <ul class="footer-links"><li><a href="#intro">About Us</a></li><li><a href="#team">Leadership</a></li><li><a href="#process">Our Process</a></li><li><a href="#casestudy">Case Studies</a></li><li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li></ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Connect</div>
+      <ul class="footer-links"><li><a href="https://frankndesign.com/contact/">Contact Us</a></li><li><a href="https://www.linkedin.com/company/frankndesign/" target="_blank">LinkedIn</a></li><li><a href="https://www.instagram.com/frankndesign/" target="_blank">Instagram</a></li><li><a href="https://x.com/frankndesign" target="_blank">Twitter / X</a></li><li><a href="https://www.facebook.com/frankndesign" target="_blank">Facebook</a></li></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 FrankNDesign LLC · Clermont, Florida</span>
+    <div class="socials">
+      <a href="https://www.linkedin.com/company/frankndesign/" class="soc" target="_blank">in</a>
+      <a href="https://www.instagram.com/frankndesign/" class="soc" target="_blank">ig</a>
+      <a href="https://x.com/frankndesign" class="soc" target="_blank">x</a>
+      <a href="https://www.facebook.com/frankndesign" class="soc" target="_blank">fb</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── BOOT ───────────────────────────────────────────────
+window.addEventListener('load', () => {
+  document.documentElement.classList.add('js-ready');
+  const isMobile = window.innerWidth <= 900;
+  const reduced  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // GSAP plugins
+  if (window.gsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+  // ── LENIS SMOOTH SCROLL (desktop only) ──
+  if (!isMobile && !reduced && window.Lenis) {
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      smoothTouch: false
+    });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // ── MOBILE BURGER MENU ──
+  const burger = document.getElementById('navBurger');
+  const navLinks = document.getElementById('navLinks');
+  if (burger && navLinks) {
+    const closeMenu = () => {
+      burger.classList.remove('open');
+      navLinks.classList.remove('open');
+      burger.setAttribute('aria-expanded','false');
+      document.body.style.overflow = '';
+    };
+    burger.addEventListener('click', () => {
+      const isOpen = burger.classList.toggle('open');
+      navLinks.classList.toggle('open', isOpen);
+      burger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  }
+
+  // ── NAV scroll state ──
+  const nav = document.getElementById('nav');
+  ScrollTrigger.create({
+    start: 60, end: 99999,
+    onUpdate: self => nav.classList.toggle('scrolled', self.scroll() > 60)
+  });
+
+  // ── REVEAL ANIMATIONS (replace IntersectionObserver) ──
+  const revealMap = [
+    { sel: '.reveal',       from: { y:40, opacity:0 } },
+    { sel: '.reveal-l',     from: { x:-40, opacity:0 } },
+    { sel: '.reveal-r',     from: { x:40, opacity:0 } },
+    { sel: '.reveal-scale', from: { scale:.94, opacity:0 } },
+  ];
+  revealMap.forEach(({sel, from}) => {
+    document.querySelectorAll(sel).forEach(el => {
+      const delayClass = Array.from(el.classList).find(c => /^d[1-6]$/.test(c));
+      const delay = delayClass ? parseInt(delayClass.slice(1)) * 0.08 : 0;
+      gsap.from(el, {
+        ...from,
+        duration: 1.1,
+        delay,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+  });
+
+  // ── HERO SCROLL-DRIVEN IMAGE SEQUENCE (Apple-style canvas) ──
+  (function heroScroll(){
+    const section = document.getElementById('hero-scroll');
+    const canvas  = document.getElementById('hero-canvas');
+    const scenes  = gsap.utils.toArray('.hero-scene');
+    if (!section || !canvas) return;
+
+    // 64 WebP frames @ 1600x900 — ~7.4MB total (down from 68MB JPG @ 1920x1080)
+    const FRAME_COUNT  = 64;
+    const PRELOAD_CRITICAL = 24;  // frames needed before hiding preloader (~2.8MB)
+    const FRAME_PATH   = i => `assets/hero-frames/${String(i).padStart(2,'0')}.webp`;
+
+    const ctx = canvas.getContext('2d');
+    const state = { frame: 0 };
+    const images = new Array(FRAME_COUNT);
+
+    // ── DRAW (cover-fit) ──
+    function draw() {
+      const img = images[Math.min(FRAME_COUNT-1, Math.max(0, Math.round(state.frame)))];
+      if (!img || !img.complete || !img.naturalWidth) return;
+      const cw = canvas.width, ch = canvas.height;
+      const ir = img.naturalWidth / img.naturalHeight;
+      const cr = cw / ch;
+      let dw, dh, dx, dy;
+      if (ir > cr) { dh = ch; dw = ch * ir; dx = (cw - dw) / 2; dy = 0; }
+      else         { dw = cw; dh = cw / ir; dx = 0; dy = (ch - dh) / 2; }
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const r = canvas.getBoundingClientRect();
+      canvas.width  = Math.round(r.width  * dpr);
+      canvas.height = Math.round(r.height * dpr);
+      draw();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function loadFrame(i, priority) {
+      return new Promise(res => {
+        const img = new Image();
+        img.onload = img.onerror = () => res(img);
+        if (priority) img.fetchPriority = 'high';
+        img.src = FRAME_PATH(i);
+        images[i] = img;
+      });
+    }
+
+    // ── PRELOADER ──
+    const preloader   = document.getElementById('preloader');
+    const preBarFill  = document.getElementById('preBarFill');
+    const prePct      = document.getElementById('prePct');
+    let   loadedCount = 0;
+    function updatePreloader() {
+      const pct = Math.round((loadedCount / PRELOAD_CRITICAL) * 100);
+      if (preBarFill) preBarFill.style.width = Math.min(100, pct) + '%';
+      if (prePct)     prePct.textContent = 'Loading ' + Math.min(100, pct) + '%';
+    }
+
+    // ── Load critical batch sequentially-ish (parallel but tracked) ──
+    function dismissPreloader() {
+      if (preloader && !preloader.classList.contains('gone')) {
+        preloader.classList.add('gone');
+        document.documentElement.classList.remove('preloading');
+        document.body.classList.remove('preloading');
+        // Refresh ScrollTrigger once layout settles
+        setTimeout(() => ScrollTrigger.refresh(), 100);
+      }
+    }
+    function loadBackground() {
+      let next = PRELOAD_CRITICAL;
+      const CONCURRENCY = 10;
+      let active = 0;
+      const pump = () => {
+        while (next < FRAME_COUNT && active < CONCURRENCY) {
+          active++;
+          loadFrame(next++).then(() => { active--; pump(); });
+        }
+      };
+      pump();
+    }
+
+    // ── Reduced motion only: skip canvas & frames. ──
+    if (reduced) {
+      loadedCount = PRELOAD_CRITICAL;
+      updatePreloader();
+      setTimeout(dismissPreloader, 350);
+      scenes.forEach((s,i) => { s.style.opacity = i===0 ? 1 : 0; });
+      return;
+    }
+
+    // Critical preload (first PRELOAD_CRITICAL frames in parallel) — desktop + mobile
+    const CRIT_CONCURRENCY = isMobile ? 5 : 8;
+    let critNext = 0;
+    let critDone = 0;
+    function critPump() {
+      while (critNext < PRELOAD_CRITICAL && (critNext - critDone) < CRIT_CONCURRENCY) {
+        const i = critNext++;
+        loadFrame(i, i === 0).then(() => {
+          critDone++;
+          loadedCount = critDone;
+          updatePreloader();
+          if (i === 0) draw();
+          if (critDone === PRELOAD_CRITICAL) {
+            setTimeout(dismissPreloader, 250);
+            loadBackground();
+          } else {
+            critPump();
+          }
+        });
+      }
+    }
+    critPump();
+
+    // Safety: dismiss after 8s if loading stalls
+    setTimeout(() => { dismissPreloader(); if (loadedCount < FRAME_COUNT) loadBackground(); }, 8000);
+
+    // a) Drive frame from scroll
+    gsap.to(state, {
+      frame: FRAME_COUNT - 1,
+      ease: 'none',
+      snap: 'frame',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end:   'bottom bottom',
+        scrub: 0.4
+      },
+      onUpdate: draw
+    });
+
+    // b) Progress bar
+    gsap.to('.hero-progress-fill', {
+      scaleX: 1, ease:'none',
+      scrollTrigger: { trigger: section, start:'top top', end:'bottom bottom', scrub:true }
+    });
+
+    // c) Scenes — equal-segment crossfade
+    const n = scenes.length;
+    const segment = 1 / n;
+    scenes.forEach((scene, i) => {
+      const inStart  = i * segment;
+      const inEnd    = inStart + segment * 0.25;
+      const outStart = (i + 1) * segment - segment * 0.25;
+      const outEnd   = (i + 1) * segment;
+
+      gsap.fromTo(scene,
+        { opacity:0, y: 60 },
+        { opacity:1, y: 0, ease:'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: () => `${inStart * 100}% top`,
+            end:   () => `${inEnd * 100}% top`,
+            scrub: true
+          }
+        }
+      );
+      if (i < n - 1) {
+        gsap.to(scene, {
+          opacity:0, y:-60, ease:'power2.in',
+          scrollTrigger: {
+            trigger: section,
+            start: () => `${outStart * 100}% top`,
+            end:   () => `${outEnd * 100}% top`,
+            scrub: true
+          }
+        });
+      }
+    });
+
+    gsap.to('#scrollHint', {
+      opacity: 0, ease: 'power1.out',
+      scrollTrigger: { trigger: section, start: '5% top', end: '15% top', scrub: true }
+    });
+  })();
+
+  // ── STATS COUNTER ──
+  document.querySelectorAll('.stat-n').forEach(el => {
+    const txt = el.textContent.trim();
+    const num = parseInt(txt.replace(/\D/g,'')) || 0;
+    const suffix = txt.replace(/[\d\s]/g,'');
+    const obj = { v: 0 };
+    gsap.to(obj, {
+      v: num, duration: 2, ease: 'power2.out',
+      onUpdate: () => { el.textContent = Math.round(obj.v) + suffix; },
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions:'play none none none' }
+    });
+  });
+
+  // ── BRANDS MARQUEE (GSAP, smoother than CSS keyframes) ──
+  const brandsTrack = document.querySelector('.brands-track');
+  if (brandsTrack) {
+    brandsTrack.style.animation = 'none';
+    const marquee = gsap.to(brandsTrack, {
+      xPercent: -50, duration: 32, ease: 'none', repeat: -1
+    });
+    brandsTrack.addEventListener('mouseenter', () => marquee.timeScale(0.25));
+    brandsTrack.addEventListener('mouseleave', () => marquee.timeScale(1));
+  }
+
+  // ── PARALLAX on intro + work hero ──
+  document.querySelectorAll('.intro-img-main img, .gallery-hero img').forEach(img => {
+    gsap.to(img, {
+      yPercent: -10, ease:'none',
+      scrollTrigger: { trigger: img.closest('section') || img, start:'top bottom', end:'bottom top', scrub: true }
+    });
+  });
+
+  // ── CASE STUDY PHASE LABELS — sticky-ish reveal ──
+  document.querySelectorAll('.cs-phase').forEach(phase => {
+    gsap.from(phase.querySelectorAll('.cs-phase-num, .cs-phase-label'), {
+      y: 40, opacity: 0, duration: 1, ease:'power3.out', stagger: 0.1,
+      scrollTrigger: { trigger: phase, start:'top 80%' }
+    });
+  });
+
+  // ── MAGNETIC CTA BUTTONS ──
+  if (!isMobile) {
+    document.querySelectorAll('.btn-orange, .btn-cta').forEach(btn => {
+      const xTo = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3.out' });
+      const yTo = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3.out' });
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        xTo((e.clientX - r.left - r.width/2) * 0.3);
+        yTo((e.clientY - r.top - r.height/2) * 0.3);
+      });
+      btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
+    });
+  }
+});
+
+// ── LIGHTBOX ──
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),lbCap=document.getElementById('lb-caption');
+let gallery=[],lbIdx=0;
+function buildGallery(){
+  gallery=Array.from(document.querySelectorAll('.lb-trigger')).map(el=>({
+    src:el.dataset.src||el.src||el.querySelector('img')?.src||'',
+    cap:el.dataset.cap||el.alt||''
+  })).filter(g=>g.src);
+}
+function openLb(idx){lbIdx=idx;lbImg.src=gallery[idx].src;lbCap.textContent=gallery[idx].cap;lb.classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){lb.classList.remove('open');document.body.style.overflow='';}
+function prevLb(){lbIdx=(lbIdx-1+gallery.length)%gallery.length;lbImg.src=gallery[lbIdx].src;lbCap.textContent=gallery[lbIdx].cap;}
+function nextLb(){lbIdx=(lbIdx+1)%gallery.length;lbImg.src=gallery[lbIdx].src;lbCap.textContent=gallery[lbIdx].cap;}
+buildGallery();
+document.querySelectorAll('.lb-trigger').forEach((el,i)=>{
+  el.style.cursor='pointer';
+  el.addEventListener('click',()=>openLb(i));
+});
+document.getElementById('lb-close').addEventListener('click',closeLb);
+document.getElementById('lb-prev').addEventListener('click',prevLb);
+document.getElementById('lb-next').addEventListener('click',nextLb);
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb();});
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')prevLb();
+  if(e.key==='ArrowRight')nextLb();
+});
+</script>
+</body>
+</html>

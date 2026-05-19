@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (por si alguien instala algo en el futuro)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.*
+
+# Backups locales / archivos pesados que no van al repo
+*.zip
+*.mp4
+*.mov
+
+# Logs
+*.log
+
+# Env
+.env
+.env.local
+
+# Claude Code temporales
+.claude/
+
+# Sistema
+Thumbs.db
