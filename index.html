@@ -238,20 +238,19 @@ section{padding:6rem 3.5rem;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
   .pi-body{font-size:.83rem;}
-  /* Mobile: section is taller to give scroll space for horizontal pan */
-  #process-intro{height:280vw;max-height:none;}
+  /* Mobile: taller section gives scroll room for horizontal pan */
+  #process-intro{height:300vh;max-height:none;}
   .pi-inner{position:sticky;top:0;height:calc(var(--vh,1vh)*100);overflow:hidden;}
-  /* Image: natural width, no object-fit — GSAP pans it horizontally */
+  /* Image container: bottom half of the pinned viewport */
   .pi-diagram-wrap{
-    position:absolute;inset:auto 0 0 0;
-    top:40%;
-    width:auto;height:55%;
-    display:flex;align-items:center;
-    opacity:1!important;
+    position:absolute;left:0;right:0;bottom:0;top:45%;
+    overflow:hidden;
+    opacity:1!important;transform:none!important;
   }
-  .pi-diagram{width:auto;height:100%;max-width:none;object-fit:none;display:block;will-change:transform;}
-  /* Text pinned at top on mobile */
-  .pi-content{position:absolute;top:0;left:0;right:0;transform:none!important;padding:2rem 1.5rem;}
+  /* Image renders at container height, auto width → naturally wider than viewport */
+  .pi-diagram{height:100%;width:auto;max-width:none;display:block;will-change:transform;object-fit:unset;}
+  /* Text sits in top half */
+  .pi-content{position:absolute;top:0;left:0;right:0;bottom:55%;display:flex;flex-direction:column;justify-content:center;transform:none!important;padding:1.5rem;}
 }
 
 /* PROCESS SCROLL-DRIVEN CANVAS */
@@ -1380,27 +1379,29 @@ window.addEventListener('load', () => {
       }
     );
 
-    // ── MOBILE: horizontal pan (scroll down = image slides left revealing full width) ──
+    // ── MOBILE: horizontal pan tied to vertical scroll ──
     if (diagram && isMobile) {
       const img = diagram.querySelector('.pi-diagram');
-      // Wait for image to load so we know its natural width
       const doMobilePan = () => {
-        const imgW = img.naturalWidth || img.offsetWidth;
-        const travel = -(imgW * (window.innerHeight * 0.55 / img.naturalHeight) - window.innerWidth);
-        if (travel >= 0) return; // image fits — no pan needed
+        // Container height = 55% of viewport height
+        const containerH = window.innerHeight * 0.55;
+        // Rendered image width = naturalWidth scaled to container height
+        const renderedW  = img.naturalWidth * (containerH / img.naturalHeight);
+        const travel     = -(renderedW - window.innerWidth);
+        if (travel >= 0) return; // already fits, no pan needed
         gsap.fromTo(img,
           { x: 0 },
           { x: travel, ease: 'none',
             scrollTrigger: {
               trigger: section, start: 'top top', end: 'bottom bottom',
-              scrub: 1, invalidateOnRefresh: true,
+              scrub: true, invalidateOnRefresh: true,
             }
           }
         );
       };
-      if (img.complete && img.naturalWidth) { doMobilePan(); }
-      else { img.addEventListener('load', doMobilePan, { once: true }); }
-      return; // skip desktop animations on mobile
+      if (img.complete && img.naturalWidth) doMobilePan();
+      else img.addEventListener('load', doMobilePan, { once: true });
+      return;
     }
 
     // ── IMAGE: continuous zoom-in as user scrolls through section ──
