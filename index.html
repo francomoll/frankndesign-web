@@ -1029,16 +1029,17 @@ window.addEventListener('load', () => {
       });
 
       // c) Scenes — equal-segment crossfade
+      // entrance: 20% of segment | hold: 45% | exit: 35% of segment
       const n = scenes.length;
       const segment = 1 / n;
       scenes.forEach((scene, i) => {
         const inStart  = i * segment;
-        const inEnd    = inStart + segment * 0.25;
-        const outStart = (i + 1) * segment - segment * 0.25;
-        const outEnd   = (i + 1) * segment;
+        const inEnd    = inStart + segment * 0.2;           // fade in over 20%
+        const outStart = (i + 1) * segment - segment * 0.35; // start fading out at 65%
+        const outEnd   = (i + 1) * segment;                // fully gone at segment end
 
         gsap.fromTo(scene,
-          { opacity:0, y: 60 },
+          { opacity:0, y: 50 },
           { opacity:1, y: 0, ease:'power2.out',
             scrollTrigger: {
               trigger: section,
@@ -1049,18 +1050,17 @@ window.addEventListener('load', () => {
             }
           }
         );
-        if (i < n - 1) {
-          gsap.to(scene, {
-            opacity:0, y:-60, ease:'power2.in',
-            scrollTrigger: {
-              trigger: section,
-              start: () => `${outStart * 100}% top`,
-              end:   () => `${outEnd * 100}% top`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            }
-          });
-        }
+        // All scenes get an exit — including the last one (fades out before section ends)
+        gsap.to(scene, {
+          opacity:0, y:-50, ease:'power2.in',
+          scrollTrigger: {
+            trigger: section,
+            start: () => `${outStart * 100}% top`,
+            end:   () => `${outEnd * 100}% top`,
+            scrub: true,
+            invalidateOnRefresh: true,
+          }
+        });
       });
 
       gsap.to('#scrollHint', {
