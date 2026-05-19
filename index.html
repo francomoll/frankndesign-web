@@ -221,9 +221,9 @@ section{padding:6rem 3.5rem;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
 /* PROCESS INTRO */
-#process-intro{padding:0!important;margin:0 0 -2px;overflow:hidden;background:#d0d0d0;position:relative;}
+#process-intro{padding:0!important;margin:0 0 -2px;overflow:hidden;background:#ffffff;position:relative;}
 /* Gradient at bottom fades intro into the dark canvas — hides the seam on scroll */
-#process-intro::after{content:'';position:absolute;bottom:0;left:0;right:0;height:35%;background:linear-gradient(to bottom,transparent,#d0d0d0);z-index:10;pointer-events:none;}
+#process-intro::after{content:'';position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(to bottom,transparent,#d0d0d0);z-index:10;pointer-events:none;}
 #process-scroll{margin-top:0!important;}
 .pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 /* Image fills the section as background */
@@ -1350,6 +1350,17 @@ window.addEventListener('load', () => {
     const h2       = section.querySelector('.pi-h2');
     const body     = section.querySelector('.pi-body');
     const textEls  = [eye, h2, body].filter(Boolean);
+
+    // ── BG: white → #d0d0d0 as section scrolls in ──
+    gsap.fromTo(section,
+      { backgroundColor: '#ffffff' },
+      { backgroundColor: '#d0d0d0', ease: 'none',
+        scrollTrigger: {
+          trigger: section, start: 'top 80%', end: 'top 10%',
+          scrub: 1, invalidateOnRefresh: true,
+        }
+      }
+    );
 
     // ── IMAGE: continuous zoom-in as user scrolls through section ──
     if (diagram && !isMobile) {
