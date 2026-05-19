@@ -769,7 +769,11 @@ window.addEventListener('load', () => {
   const reduced  = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // GSAP plugins
-  if (window.gsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    // Prevent ScrollTrigger from refreshing on small iOS viewport changes (URL bar show/hide ~50px)
+    ScrollTrigger.config({ ignoreMobileResize: true });
+  }
 
   // ── LENIS SMOOTH SCROLL (desktop only) ──
   if (!isMobile && !reduced && window.Lenis) {
@@ -927,14 +931,14 @@ window.addEventListener('load', () => {
         document.body.classList.remove('preloading');
         // Reduced-motion users: just dismiss and show first scene — no GSAP setup.
         if (reduced) return;
-        // Force scroll to 0 — on iOS the scroll position can drift while
-        // overflow:hidden was active, which would throw off ST measurements.
         window.scrollTo(0, 0);
-        // Double rAF: wait for browser to finish layout AFTER overflow:hidden removal,
-        // THEN set up ScrollTrigger so it measures the full scrollable document.
-        // This is the key iOS Safari fix: ST was measuring while overflow:hidden
-        // was active (preloader up) → wrong document height → scroll-shift on scrub.
+        // iOS Safari sticky fix: after removing html.overflow:hidden (preloader),
+        // iOS doesn't re-evaluate position:sticky until body.overflow also cycles.
+        // This is exactly what opening + closing the nav menu does, which the user
+        // confirmed fixes the hero. We replicate it here automatically.
+        document.body.style.overflow = 'hidden';
         requestAnimationFrame(() => {
+          document.body.style.overflow = '';
           requestAnimationFrame(() => {
             resizeCanvas();
             setupHeroScrollTriggers();
