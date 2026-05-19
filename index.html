@@ -1028,19 +1028,29 @@ window.addEventListener('load', () => {
         }
       });
 
-      // c) Scenes — equal-segment crossfade
+      // c) Scenes — per-scene entrance/exit directions
       // entrance: 20% of segment | hold: 45% | exit: 35% of segment
       const n = scenes.length;
       const segment = 1 / n;
+
+      // Per-scene: { from: entrance props, exit: exit props }
+      const sceneAnims = [
+        { from: { opacity:0, x:-80 }, exit: { opacity:0, x:0 } },      // scene 1: slide from left, fade out in place
+        { from: { opacity:0, y: 50 }, exit: { opacity:0, y:-50 } },     // scene 2: up in, up out
+        { from: { opacity:0, x: 80 }, exit: { opacity:0, x:0 } },      // scene 3: slide from right, fade out in place
+        { from: { opacity:0, y: 50 }, exit: { opacity:0, y:-50 } },     // scene 4: up in, fade out
+      ];
+
       scenes.forEach((scene, i) => {
         const inStart  = i * segment;
-        const inEnd    = inStart + segment * 0.2;           // fade in over 20%
-        const outStart = (i + 1) * segment - segment * 0.35; // start fading out at 65%
-        const outEnd   = (i + 1) * segment;                // fully gone at segment end
+        const inEnd    = inStart + segment * 0.2;
+        const outStart = (i + 1) * segment - segment * 0.35;
+        const outEnd   = (i + 1) * segment;
+        const anim     = sceneAnims[i] || sceneAnims[1];
 
         gsap.fromTo(scene,
-          { opacity:0, y: 50 },
-          { opacity:1, y: 0, ease:'power2.out',
+          { ...anim.from },
+          { opacity:1, x:0, y:0, ease:'power2.out',
             scrollTrigger: {
               trigger: section,
               start: () => `${inStart * 100}% top`,
@@ -1050,9 +1060,8 @@ window.addEventListener('load', () => {
             }
           }
         );
-        // All scenes get an exit — including the last one (fades out before section ends)
         gsap.to(scene, {
-          opacity:0, y:-50, ease:'power2.in',
+          ...anim.exit, ease:'power2.in',
           scrollTrigger: {
             trigger: section,
             start: () => `${outStart * 100}% top`,
