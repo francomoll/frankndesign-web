@@ -238,9 +238,20 @@ section{padding:6rem 3.5rem;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
   .pi-body{font-size:.83rem;}
-  /* On mobile: image covers portrait viewport, always visible (no GSAP opacity anim) */
-  .pi-diagram-wrap{opacity:1!important;transform:none!important;}
-  .pi-diagram{object-fit:cover;object-position:center;}
+  /* Mobile: section is taller to give scroll space for horizontal pan */
+  #process-intro{height:280vw;max-height:none;}
+  .pi-inner{position:sticky;top:0;height:calc(var(--vh,1vh)*100);overflow:hidden;}
+  /* Image: natural width, no object-fit — GSAP pans it horizontally */
+  .pi-diagram-wrap{
+    position:absolute;inset:auto 0 0 0;
+    top:40%;
+    width:auto;height:55%;
+    display:flex;align-items:center;
+    opacity:1!important;
+  }
+  .pi-diagram{width:auto;height:100%;max-width:none;object-fit:none;display:block;will-change:transform;}
+  /* Text pinned at top on mobile */
+  .pi-content{position:absolute;top:0;left:0;right:0;transform:none!important;padding:2rem 1.5rem;}
 }
 
 /* PROCESS SCROLL-DRIVEN CANVAS */
@@ -1368,6 +1379,29 @@ window.addEventListener('load', () => {
         }
       }
     );
+
+    // ── MOBILE: horizontal pan (scroll down = image slides left revealing full width) ──
+    if (diagram && isMobile) {
+      const img = diagram.querySelector('.pi-diagram');
+      // Wait for image to load so we know its natural width
+      const doMobilePan = () => {
+        const imgW = img.naturalWidth || img.offsetWidth;
+        const travel = -(imgW * (window.innerHeight * 0.55 / img.naturalHeight) - window.innerWidth);
+        if (travel >= 0) return; // image fits — no pan needed
+        gsap.fromTo(img,
+          { x: 0 },
+          { x: travel, ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top top', end: 'bottom bottom',
+              scrub: 1, invalidateOnRefresh: true,
+            }
+          }
+        );
+      };
+      if (img.complete && img.naturalWidth) { doMobilePan(); }
+      else { img.addEventListener('load', doMobilePan, { once: true }); }
+      return; // skip desktop animations on mobile
+    }
 
     // ── IMAGE: continuous zoom-in as user scrolls through section ──
     if (diagram && !isMobile) {
