@@ -272,7 +272,7 @@ section{padding:6rem 3.5rem;}
 /* TEAM */
 #team{background:var(--white);}
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8rem;margin-top:3rem;}
-.team-card{cursor:pointer;}
+.team-card{cursor:pointer;text-decoration:none;color:inherit;display:block;}
 .team-photo{aspect-ratio:3/4;overflow:hidden;border-radius:4px;position:relative;box-shadow:0 8px 24px rgba(17,17,17,.08);}
 .team-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1),filter .4s;}
 .team-card:hover .team-photo img{transform:scale(1.05);filter:brightness(.8);}
@@ -710,22 +710,22 @@ html.preloading,body.preloading{overflow:hidden;}
   <h2 class="sec-h2 reveal d1">Leadership Team</h2>
   <p class="sec-body reveal d2" style="margin-top:.9rem;max-width:540px;">A multidisciplinary team of designers, architects, BIM specialists, and production managers with decades of combined experience in themed entertainment and hospitality.</p>
   <div class="team-grid">
-    <div class="team-card reveal">
+    <a class="team-card reveal" href="about.html#francisco">
       <div class="team-photo"><img src="assets/francisco.webp" alt="Francisco J. Núñez" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Francisco J. Núñez</div><div class="team-role">Principal &amp; Creative Director</div>
-    </div>
-    <div class="team-card reveal d1">
+    </a>
+    <a class="team-card reveal d1" href="about.html#jeremy">
       <div class="team-photo"><img src="assets/jeremy.webp" alt="Jeremy Grunert" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Jeremy Grunert</div><div class="team-role">Director of Production</div>
-    </div>
-    <div class="team-card reveal d2">
+    </a>
+    <a class="team-card reveal d2" href="about.html#carianne">
       <div class="team-photo"><img src="assets/carianne.webp" alt="Carianne DePasqua" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Carianne DePasqua</div><div class="team-role">Design Lead</div>
-    </div>
-    <div class="team-card reveal d3">
+    </a>
+    <a class="team-card reveal d3" href="about.html#patrick">
       <div class="team-photo"><img src="assets/patrick.webp" alt="Patrick Witthaus" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Patrick Witthaus</div><div class="team-role">BIM Manager</div>
-    </div>
+    </a>
   </div>
 </section>
 
