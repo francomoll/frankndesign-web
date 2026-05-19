@@ -223,17 +223,17 @@ section{padding:6rem 3.5rem;}
 /* PROCESS INTRO */
 #process-intro{padding:0!important;margin:0;overflow:hidden;background:#d0d0d0;}
 .pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.pi-content{position:relative;z-index:2;text-align:center;padding:3rem 3.5rem;width:100%;max-width:1400px;}
+/* Image fills the section as background */
+.pi-diagram-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;will-change:transform,opacity;}
+.pi-diagram{width:100%;height:100%;object-fit:contain;display:block;}
+/* Text centered absolutely over the image */
+.pi-content{position:relative;z-index:2;text-align:center;padding:3rem 3.5rem;width:100%;pointer-events:none;}
 .pi-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;justify-content:center;gap:.7rem;margin-bottom:1.2rem;}
 .pi-eye::before,.pi-eye::after{content:'';flex:0 0 24px;height:1px;background:var(--orange);}
-.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--ink);margin-bottom:1.6rem;}
-/* Research & Strategy diagram — zooms + fades in on scroll */
-.pi-diagram-wrap{overflow:hidden;margin:0 auto 1.6rem;width:100%;will-change:transform,opacity;}
-.pi-diagram{width:100%;display:block;}
+.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--ink);margin-bottom:1rem;text-shadow:0 2px 24px rgba(208,208,208,.8);}
 .pi-body{font-size:.9rem;color:var(--muted);line-height:1.85;max-width:520px;margin:0 auto;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
-  .pi-diagram-wrap{max-width:100%;}
   .pi-body{font-size:.83rem;}
 }
 
@@ -631,13 +631,14 @@ html.preloading,body.preloading{overflow:hidden;}
 <!-- PROCESS INTRO — scroll-driven zoom+fade before the canvas -->
 <section id="process-intro">
   <div class="pi-inner">
+    <!-- Image fills the section — zooms+fades in on scroll -->
+    <div class="pi-diagram-wrap">
+      <img class="pi-diagram" src="assets/research and strategy.webp" alt="Research and Strategy — inputs flow into FrankNDesign and become a finished build" loading="lazy"/>
+    </div>
+    <!-- Text centered over the image -->
     <div class="pi-content">
       <div class="pi-eye">How We Work</div>
       <h2 class="pi-h2">From Inputs<br>to Outcome</h2>
-      <!-- Diagram fades + zooms in over the bg -->
-      <div class="pi-diagram-wrap">
-        <img class="pi-diagram" src="assets/research and strategy.webp" alt="Research and Strategy — inputs flow into FrankNDesign and become a finished build" loading="lazy"/>
-      </div>
       <p class="pi-body">Every project starts with what you bring — ideas, drawings, assets, photos. FrankNDesign absorbs it all and delivers a fully coordinated, construction-ready result.</p>
     </div>
   </div>
