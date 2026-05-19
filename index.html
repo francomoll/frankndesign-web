@@ -221,14 +221,14 @@ section{padding:6rem 3.5rem;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
 /* PROCESS INTRO */
-#process-intro{padding:0!important;margin:0;background:#f0f0ee;overflow:hidden;}
-.pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#process-intro{padding:0!important;margin:0;background:#111;overflow:hidden;}
+.pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#111;}
 .pi-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform-origin:center center;will-change:transform,opacity;}
 .pi-content{position:relative;z-index:2;text-align:center;padding:3rem 2rem;max-width:700px;}
 .pi-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;justify-content:center;gap:.7rem;margin-bottom:1.2rem;}
 .pi-eye::before,.pi-eye::after{content:'';flex:0 0 24px;height:1px;background:var(--orange);}
-.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--ink);margin-bottom:1.2rem;}
-.pi-body{font-size:.9rem;color:var(--muted);line-height:1.85;max-width:480px;margin:0 auto;}
+.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--white);margin-bottom:1.2rem;}
+.pi-body{font-size:.9rem;color:rgba(255,255,255,.6);line-height:1.85;max-width:480px;margin:0 auto;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
   .pi-body{font-size:.83rem;}
@@ -238,7 +238,7 @@ section{padding:6rem 3.5rem;}
 #process-scroll{position:relative;height:calc(var(--vh,1vh)*600);background:#111;padding:0!important;margin:0;}
 .process-sticky{position:sticky;top:0;height:calc(var(--vh,1vh)*100);width:100%;overflow:hidden;background:#111;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);}
 #process-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
-.process-vignette{position:absolute;inset:0;z-index:2;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.22) 55%,transparent 100%),linear-gradient(to bottom,rgba(0,0,0,.4) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.65) 100%);pointer-events:none;}
+.process-vignette{position:absolute;inset:0;z-index:2;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.22) 55%,transparent 100%),linear-gradient(to bottom,rgba(0,0,0,.4) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.65) 100%);pointer-events:none;opacity:0;}
 .process-progress{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);z-index:6;}
 .process-progress-fill{height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left center;}
 .process-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;}
@@ -1247,6 +1247,18 @@ window.addEventListener('load', () => {
         },
         onUpdate: drawFrame,
       });
+
+      // vignette — starts invisible, fades in as first scene begins (no dark overlay on frame 0)
+      const vignette = section.querySelector('.process-vignette');
+      if (vignette) {
+        gsap.to(vignette, {
+          opacity: 1, ease: 'power1.out',
+          scrollTrigger: {
+            trigger: section, start: 'top top', end: '12% top',
+            scrub: true, invalidateOnRefresh: true,
+          }
+        });
+      }
 
       // progress bar
       gsap.to('.process-progress-fill', {
