@@ -1049,25 +1049,24 @@ window.addEventListener('load', () => {
         const segEnd   = (i + 1) * segment;
         const a = sceneAnims[i] || sceneAnims[1];
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: () => `${segStart * 100}% top`,
-            end:   () => `${segEnd   * 100}% top`,
-            scrub: true,
-            invalidateOnRefresh: true,
-          }
-        });
+        const stConfig = {
+          trigger: section,
+          start: () => `${segStart * 100}% top`,
+          end:   () => `${segEnd   * 100}% top`,
+          scrub: true,
+          invalidateOnRefresh: true,
+        };
 
-        // entrance
-        tl.fromTo(scene,
-          { opacity:0, x: a.fromX, y: a.fromY },
-          { opacity:1, x:0, y:0, ease:'power2.out', duration: IN }
-        );
+        const tl = gsap.timeline({ scrollTrigger: stConfig });
+        const kids = Array.from(scene.children); // text elements only — NOT ::before (gradient)
+
+        // entrance: scene fades in, text children slide in from direction
+        tl.fromTo(scene, { opacity:0 }, { opacity:1, ease:'power2.out', duration: IN }, 0);
+        tl.fromTo(kids,  { x: a.fromX, y: a.fromY }, { x:0, y:0, ease:'power2.out', duration: IN }, 0);
         // hold
-        tl.to(scene, { opacity:1, x:0, y:0, duration: HOLD });
-        // exit — pure fade, no movement
-        tl.to(scene, { opacity:0, x:0, y:0, ease:'power1.in', duration: OUT });
+        tl.to(scene, { opacity:1, duration: HOLD });
+        // exit: scene fades out, text stays put — gradient never moves, never gets clipped
+        tl.to(scene, { opacity:0, ease:'power1.in', duration: OUT });
       });
 
       gsap.to('#scrollHint', {
