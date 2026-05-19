@@ -881,6 +881,7 @@ window.addEventListener('load', () => {
       smoothWheel: true,
       smoothTouch: false
     });
+    window._lenis = lenis; // expose for anchor clicks
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -1449,6 +1450,20 @@ window.addEventListener('load', () => {
       btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
     });
   }
+});
+
+// ── SMOOTH ANCHOR LINKS (use Lenis when available) ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    if (window._lenis) {
+      window._lenis.scrollTo(target, { offset: 0, duration: 1.6, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 });
 
 // ── LIGHTBOX ──
