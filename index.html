@@ -221,16 +221,23 @@ section{padding:6rem 3.5rem;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
 /* PROCESS INTRO */
-#process-intro{padding:0!important;margin:0;background:#111;overflow:hidden;}
-.pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#111;}
-.pi-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform-origin:center center;will-change:transform,opacity;}
-.pi-content{position:relative;z-index:2;text-align:center;padding:3rem 2rem;max-width:700px;}
+#process-intro{padding:0!important;margin:0;overflow:hidden;}
+.pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+/* Frame 0 of the process canvas — always visible so the sections look seamless */
+.pi-frame0{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;}
+/* Soft dark vignette so white text is readable over the light gray frame */
+.pi-vignette{position:absolute;inset:0;z-index:2;background:rgba(0,0,0,.38);pointer-events:none;}
+.pi-content{position:relative;z-index:3;text-align:center;padding:3rem 2rem;max-width:800px;}
 .pi-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;justify-content:center;gap:.7rem;margin-bottom:1.2rem;}
 .pi-eye::before,.pi-eye::after{content:'';flex:0 0 24px;height:1px;background:var(--orange);}
-.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--white);margin-bottom:1.2rem;}
-.pi-body{font-size:.9rem;color:rgba(255,255,255,.6);line-height:1.85;max-width:480px;margin:0 auto;}
+.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--white);margin-bottom:1.6rem;}
+/* Research & Strategy diagram — zooms + fades in on scroll */
+.pi-diagram-wrap{overflow:hidden;border-radius:6px;margin:0 auto 1.6rem;max-width:680px;will-change:transform,opacity;}
+.pi-diagram{width:100%;display:block;border-radius:6px;}
+.pi-body{font-size:.9rem;color:rgba(255,255,255,.65);line-height:1.85;max-width:520px;margin:0 auto;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
+  .pi-diagram-wrap{max-width:100%;}
   .pi-body{font-size:.83rem;}
 }
 
@@ -628,10 +635,16 @@ html.preloading,body.preloading{overflow:hidden;}
 <!-- PROCESS INTRO — scroll-driven zoom+fade before the canvas -->
 <section id="process-intro">
   <div class="pi-inner">
-    <img class="pi-bg" src="assets/research and strategy.webp" alt="From inputs to outcome — FrankNDesign workflow" loading="lazy"/>
+    <!-- Frame 0 of the canvas as static bg → seamless scroll transition -->
+    <img class="pi-frame0" src="assets/process-frames/00.webp" alt="" aria-hidden="true"/>
+    <div class="pi-vignette"></div>
     <div class="pi-content">
       <div class="pi-eye">How We Work</div>
       <h2 class="pi-h2">From Inputs<br>to Outcome</h2>
+      <!-- Diagram fades + zooms in over the bg -->
+      <div class="pi-diagram-wrap">
+        <img class="pi-diagram" src="assets/research and strategy.webp" alt="Research and Strategy — inputs flow into FrankNDesign and become a finished build" loading="lazy"/>
+      </div>
       <p class="pi-body">Every project starts with what you bring — ideas, drawings, assets, photos. FrankNDesign absorbs it all and delivers a fully coordinated, construction-ready result.</p>
     </div>
   </div>
@@ -1333,49 +1346,42 @@ window.addEventListener('load', () => {
     observer.observe(section);
   })();
 
-  // ── PROCESS INTRO — zoom + fade on scroll ──
+  // ── PROCESS INTRO — diagram zoom+fade, text reveal ──
   (function processIntro(){
-    const section = document.getElementById('process-intro');
+    const section  = document.getElementById('process-intro');
     if (!section) return;
-    const bg      = section.querySelector('.pi-bg');
-    const content = section.querySelectorAll('.pi-content > *');
+    const diagram  = section.querySelector('.pi-diagram-wrap');
+    const textEls  = [
+      section.querySelector('.pi-eye'),
+      section.querySelector('.pi-h2'),
+      section.querySelector('.pi-body'),
+    ].filter(Boolean);
 
-    // Image: starts zoomed-in + invisible, scrubs to natural + visible
-    gsap.fromTo(bg,
-      { scale: 1.14, opacity: 0 },
-      { scale: 1.0,  opacity: 1, ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 90%',
-          end:   'top 15%',
-          scrub: 0.7,
-          invalidateOnRefresh: true,
+    // Diagram: starts zoomed-in + invisible, reveals as section scrolls into view
+    if (diagram) {
+      gsap.fromTo(diagram,
+        { scale: 1.10, opacity: 0 },
+        { scale: 1.0,  opacity: 1, ease: 'power2.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%',
+            end:   'top 20%',
+            scrub: 0.7,
+            invalidateOnRefresh: true,
+          }
         }
-      }
-    );
+      );
+    }
 
-    // Text: fades + rises from center after image starts revealing
-    gsap.fromTo(content,
-      { y: 36, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'power2.out', stagger: 0.10,
+    // Text elements: staggered fade+rise after diagram starts appearing
+    gsap.fromTo(textEls,
+      { y: 30, opacity: 0 },
+      { y: 0,  opacity: 1, ease: 'power2.out', stagger: 0.12,
         scrollTrigger: {
           trigger: section,
-          start: 'top 70%',
+          start: 'top 75%',
           end:   'top 25%',
           scrub: 0.6,
-          invalidateOnRefresh: true,
-        }
-      }
-    );
-
-    // Exit: as section leaves viewport upward, fade bg out slightly (soft transition to dark canvas)
-    gsap.to(bg,
-      { opacity: 0, ease: 'power1.in',
-        scrollTrigger: {
-          trigger: section,
-          start: 'bottom 60%',
-          end:   'bottom top',
-          scrub: 0.5,
           invalidateOnRefresh: true,
         }
       }
