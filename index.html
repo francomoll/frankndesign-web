@@ -220,6 +220,15 @@ section{padding:6rem 3.5rem;}
 .svc-items li{font-size:.8rem;color:var(--muted);padding-left:.9rem;position:relative;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
+/* PROCESS INTRO */
+#process-intro{background:var(--off-white);padding-bottom:0!important;}
+.pi-text{max-width:640px;margin-bottom:3.5rem;}
+.pi-img{width:calc(100% + 7rem);margin-left:-3.5rem;margin-bottom:0;line-height:0;}
+.pi-img img{width:100%;display:block;}
+@media(max-width:900px){
+  .pi-img{width:calc(100% + 3rem);margin-left:-1.5rem;}
+}
+
 /* PROCESS SCROLL-DRIVEN CANVAS */
 #process-scroll{position:relative;height:calc(var(--vh,1vh)*600);background:#111;padding:0!important;margin:0;}
 .process-sticky{position:sticky;top:0;height:calc(var(--vh,1vh)*100);width:100%;overflow:hidden;background:#111;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);}
@@ -608,6 +617,18 @@ html.preloading,body.preloading{overflow:hidden;}
     <div class="svc-card reveal d3"><div class="svc-n">04</div><div class="svc-name">Process Implementation</div><ul class="svc-items"><li>BIM Management</li><li>BIM Support &amp; Training</li><li>BIM Standards Development</li><li>Clash Detection</li><li>Design &amp; Document Review</li><li>Field Installation Supervision</li></ul></div>
     <div class="svc-card reveal d4"><div class="svc-n">05</div><div class="svc-name">Strategic Planning</div><ul class="svc-items"><li>Integration Planning</li><li>Talent &amp; Resource Management</li><li>Process Assessment</li><li>Subject Matter Expert Counsel</li><li>Interoperability Strategy</li></ul></div>
     <div class="svc-card reveal d5"><div class="svc-n">06</div><div class="svc-name">Visualization</div><ul class="svc-items"><li>Real-Time Rendering</li><li>Animation &amp; Animatics</li><li>Marketing Visualization</li><li>On-Site Art Direction</li><li>Previsualization</li></ul></div>
+  </div>
+</section>
+
+<!-- PROCESS INTRO — bridge between Services and the scroll-driven canvas -->
+<section id="process-intro">
+  <div class="pi-text reveal">
+    <div class="sec-eye">How We Work</div>
+    <h2 class="sec-h2 d1">From Inputs<br>to Outcome</h2>
+    <p class="sec-body d2">Every project starts with what you bring — ideas, drawings, assets, photos. FrankNDesign absorbs it all and delivers a fully coordinated, construction-ready result.</p>
+  </div>
+  <div class="pi-img reveal-scale d2">
+    <img src="assets/research and strategy.webp" alt="Research and Strategy — inputs flow into FrankNDesign and become a finished build" loading="lazy"/>
   </div>
 </section>
 
