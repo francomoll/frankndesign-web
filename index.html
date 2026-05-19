@@ -1028,48 +1028,46 @@ window.addEventListener('load', () => {
         }
       });
 
-      // c) Scenes — per-scene entrance/exit directions
-      // entrance: 20% of segment | hold: 45% | exit: 35% of segment
+      // c) Scenes — single timeline per scene (entrance → hold → exit as one scrub)
+      // Using a timeline avoids GSAP tween conflicts between entrance and exit tweens.
       const n = scenes.length;
       const segment = 1 / n;
 
-      // Per-scene: { from: entrance props, exit: exit props }
+      // in: 20% | hold: 45% | out: 35%  (must add to 1.0)
+      const IN = 0.20, HOLD = 0.45, OUT = 0.35;
+
+      // Per-scene enter/exit directions
       const sceneAnims = [
-        { from: { opacity:0, x:-80 }, exit: { opacity:0, x:0 } },      // scene 1: slide from left, fade out in place
-        { from: { opacity:0, y: 50 }, exit: { opacity:0, y:-50 } },     // scene 2: up in, up out
-        { from: { opacity:0, x: 80 }, exit: { opacity:0, x:0 } },      // scene 3: slide from right, fade out in place
-        { from: { opacity:0, y: 50 }, exit: { opacity:0, y:-50 } },     // scene 4: up in, fade out
+        { fromX:-90, fromY:0,  toX: 90, toY:0  },   // 1: left → right
+        { fromX:0,   fromY:60, toX: 0,  toY:-60 },   // 2: up ↑
+        { fromX: 90, fromY:0,  toX:-90, toY:0  },    // 3: right → left
+        { fromX:0,   fromY:60, toX: 0,  toY:-60 },   // 4: up ↑
       ];
 
       scenes.forEach((scene, i) => {
-        const inStart  = i * segment;
-        const inEnd    = inStart + segment * 0.2;
-        const outStart = (i + 1) * segment - segment * 0.35;
-        const outEnd   = (i + 1) * segment;
-        const anim     = sceneAnims[i] || sceneAnims[1];
+        const segStart = i * segment;
+        const segEnd   = (i + 1) * segment;
+        const a = sceneAnims[i] || sceneAnims[1];
 
-        gsap.fromTo(scene,
-          { ...anim.from },
-          { opacity:1, x:0, y:0, ease:'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: () => `${inStart * 100}% top`,
-              end:   () => `${inEnd * 100}% top`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            }
-          }
-        );
-        gsap.to(scene, {
-          ...anim.exit, ease:'power2.in',
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
-            start: () => `${outStart * 100}% top`,
-            end:   () => `${outEnd * 100}% top`,
+            start: () => `${segStart * 100}% top`,
+            end:   () => `${segEnd   * 100}% top`,
             scrub: true,
             invalidateOnRefresh: true,
           }
         });
+
+        // entrance
+        tl.fromTo(scene,
+          { opacity:0, x: a.fromX, y: a.fromY },
+          { opacity:1, x:0, y:0, ease:'power2.out', duration: IN }
+        );
+        // hold
+        tl.to(scene, { opacity:1, x:0, y:0, duration: HOLD });
+        // exit
+        tl.to(scene, { opacity:0, x: a.toX, y: a.toY, ease:'power2.in', duration: OUT });
       });
 
       gsap.to('#scrollHint', {
