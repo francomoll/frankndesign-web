@@ -1036,12 +1036,12 @@ window.addEventListener('load', () => {
       // in: 20% | hold: 45% | out: 35%  (must add to 1.0)
       const IN = 0.20, HOLD = 0.45, OUT = 0.35;
 
-      // Per-scene enter/exit directions
+      // Per-scene entrance directions — exit is always a clean fade (no movement)
       const sceneAnims = [
-        { fromX:-90, fromY:0,  toX: 90, toY:0  },   // 1: left → right
-        { fromX:0,   fromY:60, toX: 0,  toY:-60 },   // 2: up ↑
-        { fromX: 90, fromY:0,  toX:-90, toY:0  },    // 3: right → left
-        { fromX:0,   fromY:60, toX: 0,  toY:-60 },   // 4: up ↑
+        { fromX:-90, fromY:0  },   // 1: slides in from left
+        { fromX:0,   fromY:60 },   // 2: rises from below
+        { fromX: 90, fromY:0  },   // 3: slides in from right
+        { fromX:0,   fromY:60 },   // 4: rises from below
       ];
 
       scenes.forEach((scene, i) => {
@@ -1066,8 +1066,8 @@ window.addEventListener('load', () => {
         );
         // hold
         tl.to(scene, { opacity:1, x:0, y:0, duration: HOLD });
-        // exit
-        tl.to(scene, { opacity:0, x: a.toX, y: a.toY, ease:'power2.in', duration: OUT });
+        // exit — pure fade, no movement
+        tl.to(scene, { opacity:0, x:0, y:0, ease:'power1.in', duration: OUT });
       });
 
       gsap.to('#scrollHint', {
