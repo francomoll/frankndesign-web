@@ -7,10 +7,12 @@
 ## Contexto
 
 - **Cliente:** FrankNDesign (estudio de virtual production / themed entertainment, Clermont FL).
-- **Trabajando:** Franco Moll (info@francomoll.com).
+- **Trabajando:** Franco Moll (info@francomoll.com) + Harshad Variya (harshadvariya1994@gmail.com / GitHub: VariyaHarshad).
 - **Proyecto:** redesign premium del sitio público (actualmente live en frankndesign.com).
 - **Fecha inicio:** 2026-05-18.
-- **Forma de trabajo:** iteración rápida sobre `index.html` con preview live. Franco escribe en español, a veces con typos — interpretar la intención, no pedir clarificación si es obvio.
+- **Repo:** https://github.com/francomoll/frankndesign-web (público)
+- **Deploy:** https://frankndesign-web.vercel.app (auto-deploy en push a `main`)
+- **Forma de trabajo:** iteración rápida sobre los HTML con preview live. Franco escribe en español, a veces con typos — interpretar la intención, no pedir clarificación si es obvio. Harshad trabaja en inglés.
 
 ---
 
@@ -44,11 +46,33 @@
 
 ---
 
-## Estado actual (al 2026-05-18)
+## Estructura de archivos
+
+```
+frankndesign-web/
+├── index.html          # Home — TODO el código (~950 líneas, HTML+CSS+JS inline)
+├── about.html          # About Us — agregado por Harshad (2026-05-19)
+├── work.html           # Work/Portfolio — agregado por Harshad (2026-05-19)
+├── vercel.json         # Rutas y config de Vercel — agregado por Harshad
+├── HANDOFF.md          # Doc de handoff para humanos
+├── CLAUDE.md           # Este archivo
+└── assets/
+    ├── hero-frames/    # 64 WebP 1600×900 — secuencia del hero (7.4 MB)
+    ├── partnerships-logo/  # 8 logos de partners (agregados por Harshad)
+    ├── FrankNDesign Logo.webp
+    ├── hero-frank.webp
+    ├── about-us-bg.webp    # Fondo de about (agregado por Harshad)
+    ├── francisco.webp, jeremy.webp, carianne.webp, patrick.webp
+    └── FrankNDesign Virtual Production*.webp (x4)
+```
+
+---
+
+## Estado actual (al 2026-05-19)
 
 ### ✅ Hecho
 - Auditoría de contenido del sitio actual (frankndesign.com).
-- Mockup base reescrito en single-file `index.html` (~900 líneas).
+- Mockup base reescrito en single-file `index.html` (~950 líneas).
 - Paleta swap: naranja `#e8620a` → rojo `#e30613` + grises/negro/blanco.
 - Logo real integrado en nav (con invert filter) y footer.
 - Hero rediseñado: scroll-driven canvas estilo Apple, 4 escenas de texto con crossfade.
@@ -58,14 +82,14 @@
   - Hero conserva scroll-scrub (altura 350vh).
   - Burger menu overlay full-screen.
   - Stats 4→2×2, services 3→2 cols (1 col <540px), team 4→2 cols.
-- Assets locales:
-  - Hero: poster `hero-frank.webp` + secuencia `hero-frames/00-63.webp`
-  - Team: francisco, jeremy, carianne, patrick (.webp)
-  - Logo: `FrankNDesign Logo.webp`
-- INTRO usa imágenes de proyectos remotas (Hagrid's + modelo 3D multidisciplinario), no las fotos del equipo.
+- Assets locales: hero frames, team photos, logo.
 - Animaciones premium: reveals con stagger, counter en stats, parallax intro/work, marquee brands con GSAP, magnetic CTAs, pin reveals en case study.
-- Backdrop direccional + text-shadow en cada hero scene para legibilidad sobre el video.
-- `HANDOFF.md` creado para pasar el proyecto a otro miembro del equipo.
+- iOS Safari fix: `body.overflow` cycle en `dismissPreloader` + `ScrollTrigger.config({ ignoreMobileResize: true })`.
+- GitHub repo público: https://github.com/francomoll/frankndesign-web
+- Vercel auto-deploy configurado.
+- `about.html` y `work.html` agregados por Harshad (2026-05-19).
+- `vercel.json` con rutas configurado por Harshad.
+- `assets/partnerships-logo/` con 8 logos agregados por Harshad.
 
 ### 🟡 Pendiente — decisiones del cliente
 - [ ] Confirmar tono exacto del rojo de marca (hoy `#e30613`).
@@ -75,10 +99,12 @@
 - [ ] ¿Multi-idioma (versión ES) o solo EN?
 
 ### 🟡 Pendiente — trabajo técnico
+- [ ] Revisar y alinear estilos de `about.html` y `work.html` con la paleta y tipografía de `index.html`.
 - [ ] Descargar imágenes del portfolio + case study (hoy apuntan a `frankndesign.com/wp-content/uploads/2026/03/...`) y servir local.
-- [ ] SEO: meta description, OG, Twitter Card, JSON-LD Organization.
-- [ ] Favicon.
+- [ ] SEO: meta description, OG, Twitter Card, JSON-LD Organization (en los 3 HTML).
+- [ ] Favicon (en los 3 HTML).
 - [ ] Página 404.
+- [ ] Verificar iOS Safari fix en el deploy live.
 - [ ] Considerar Lottie en sección Process.
 - [ ] Fallback hero más liviano para mobile (opcional — hoy carga los 7.4 MB también).
 
@@ -141,5 +167,9 @@ grep -n "patrick\|francisco" index.html
 | 2026-05-18 | Optimización: 64 JPG @ 1920×1080 → 64 WebP @ 1600×900, 23MB → 7.4MB | Claude |
 | 2026-05-18 | Borrada carpeta `assets/hero-section1/`; mp4 movido por Franco | Franco + Claude |
 | 2026-05-18 | `HANDOFF.md` + `CLAUDE.md` creados | Claude |
+| 2026-05-18 | iOS Safari: múltiples fixes de scroll-shift (--vh, rAF, visualViewport) | Claude |
+| 2026-05-19 | iOS Safari fix definitivo: cycle body.overflow + ignoreMobileResize | Claude |
+| 2026-05-19 | Repo hecho público en GitHub | Franco + Claude |
+| 2026-05-19 | `about.html`, `work.html`, `vercel.json`, logos de partners | Harshad |
 
 > Mantener este log breve. Para detalles, `git log` o el plan archivado en `~/.claude/plans/haz-una-audotoria-de-crispy-hammock.md`.
