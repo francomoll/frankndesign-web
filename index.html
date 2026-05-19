@@ -1341,46 +1341,40 @@ window.addEventListener('load', () => {
     observer.observe(section);
   })();
 
-  // ── PROCESS INTRO — diagram zoom+fade in + out, text reveal + exit ──
+  // ── PROCESS INTRO — zoom + text reveal/exit ──
   (function processIntro(){
     const section  = document.getElementById('process-intro');
     if (!section) return;
     const diagram  = section.querySelector('.pi-diagram-wrap');
-    const textEls  = [
-      section.querySelector('.pi-eye'),
-      section.querySelector('.pi-h2'),
-      section.querySelector('.pi-body'),
-    ].filter(Boolean);
-    const allEls = [...textEls, diagram].filter(Boolean);
+    const eye      = section.querySelector('.pi-eye');
+    const h2       = section.querySelector('.pi-h2');
+    const body     = section.querySelector('.pi-body');
+    const textEls  = [eye, h2, body].filter(Boolean);
 
-    // ── ENTER: diagram zooms+fades in, text rises (desktop only) ──
+    // ── IMAGE: continuous zoom-in as user scrolls through section ──
     if (diagram && !isMobile) {
       gsap.fromTo(diagram,
-        { scale: 1.12, opacity: 0 },
-        { scale: 1.0,  opacity: 1, ease: 'power2.out',
+        { scale: 1.0 },
+        { scale: 1.18, ease: 'none',
           scrollTrigger: {
-            trigger: section, start: 'top 85%', end: 'top 20%',
-            scrub: 0.7, invalidateOnRefresh: true,
+            trigger: section, start: 'top bottom', end: 'bottom top',
+            scrub: 1.2, invalidateOnRefresh: true,
           }
         }
       );
     }
-    gsap.fromTo(textEls,
-      { y: 35, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'power2.out', stagger: 0.10,
-        scrollTrigger: {
-          trigger: section, start: 'top 75%', end: 'top 25%',
-          scrub: 0.6, invalidateOnRefresh: true,
-        }
-      }
-    );
 
-    // ── EXIT: everything fades + shifts up as section leaves ──
-    gsap.to(allEls, {
-      y: -40, opacity: 0, ease: 'power2.in', stagger: 0.05,
+    // ── TEXT ENTER: each element rises from below on section entry ──
+    if (eye)  gsap.fromTo(eye,  { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 35%', scrub: 0.7, invalidateOnRefresh: true } });
+    if (h2)   gsap.fromTo(h2,   { y: 70, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 75%', end: 'top 30%', scrub: 0.7, invalidateOnRefresh: true } });
+    if (body) gsap.fromTo(body, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 70%', end: 'top 25%', scrub: 0.7, invalidateOnRefresh: true } });
+
+    // ── TEXT EXIT: drift up + fade as section leaves ──
+    gsap.to(textEls, {
+      y: -50, opacity: 0, ease: 'power2.in', stagger: 0.04,
       scrollTrigger: {
         trigger: section, start: 'bottom 30%', end: 'bottom -5%',
-        scrub: 0.6, invalidateOnRefresh: true,
+        scrub: 0.7, invalidateOnRefresh: true,
       }
     });
   })();
