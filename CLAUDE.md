@@ -4,6 +4,24 @@
 
 ---
 
+## Regla de inicio de sesión / Session start rule
+
+**Al comenzar cualquier sesión**, Claude debe ejecutar estos comandos y reportar el resultado antes de tocar cualquier archivo:
+
+```bash
+git status
+git log origin/main..HEAD --oneline
+```
+
+- Si hay cambios locales sin commitear → avisarle al usuario antes de hacer pull.
+- Si todo está limpio → recordarle que haga `git pull origin main` para sincronizar.
+
+**At the start of every session**, Claude should run the commands above and report back before touching any file:
+- If there are uncommitted local changes → warn the user before pulling.
+- If the working tree is clean → remind the user to run `git pull origin main` to sync with the team.
+
+---
+
 ## Contexto
 
 - **Cliente:** FrankNDesign (estudio de virtual production / themed entertainment, Clermont FL).
