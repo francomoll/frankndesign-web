@@ -10,17 +10,25 @@
 // Lock viewport height to a fixed pixel value (avoids iOS Safari URL bar layout shifts)
 // Runs synchronously before any CSS that uses --vh is applied
 (function(){
+  // --vh stores 1% of viewport height in px, so `calc(var(--vh) * 100)` = full height.
+  // We lock it on load + only update on real rotation/resize (not iOS URL bar collapse).
   var setVH = function(){
-    document.documentElement.style.setProperty('--vh', window.innerHeight + 'px');
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
   };
   setVH();
-  // Only update on real rotation/resize — NOT on scroll (which triggers URL bar collapse)
-  window.addEventListener('orientationchange', function(){ setTimeout(setVH, 120); });
+  window.addEventListener('orientationchange', function(){
+    setTimeout(function(){
+      setVH();
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+    }, 120);
+  });
   var lastW = window.innerWidth;
+  var lastH = window.innerHeight;
   window.addEventListener('resize', function(){
-    // Only refresh on width change (true resize) or significant height change (>150px = rotation, not URL bar)
-    if (window.innerWidth !== lastW || Math.abs(window.innerHeight - parseInt(document.documentElement.style.getPropertyValue('--vh'))) > 150) {
+    // Only refresh on width change OR significant height change (>150px = real resize, not URL bar)
+    if (window.innerWidth !== lastW || Math.abs(window.innerHeight - lastH) > 150) {
       lastW = window.innerWidth;
+      lastH = window.innerHeight;
       setVH();
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
     }
