@@ -1339,7 +1339,7 @@ window.addEventListener('load', () => {
     observer.observe(section);
   })();
 
-  // ── PROCESS INTRO — diagram zoom+fade, text reveal ──
+  // ── PROCESS INTRO — diagram zoom+fade in + out, text reveal + exit ──
   (function processIntro(){
     const section  = document.getElementById('process-intro');
     if (!section) return;
@@ -1349,36 +1349,38 @@ window.addEventListener('load', () => {
       section.querySelector('.pi-h2'),
       section.querySelector('.pi-body'),
     ].filter(Boolean);
+    const allEls = [...textEls, diagram].filter(Boolean);
 
-    // Diagram: starts zoomed-in + invisible, reveals as section scrolls into view
+    // ── ENTER: diagram zooms+fades in, text rises ──
     if (diagram) {
       gsap.fromTo(diagram,
-        { scale: 1.10, opacity: 0 },
+        { scale: 1.12, opacity: 0 },
         { scale: 1.0,  opacity: 1, ease: 'power2.out',
           scrollTrigger: {
-            trigger: section,
-            start: 'top 85%',
-            end:   'top 20%',
-            scrub: 0.7,
-            invalidateOnRefresh: true,
+            trigger: section, start: 'top 85%', end: 'top 20%',
+            scrub: 0.7, invalidateOnRefresh: true,
           }
         }
       );
     }
-
-    // Text elements: staggered fade+rise after diagram starts appearing
     gsap.fromTo(textEls,
-      { y: 30, opacity: 0 },
-      { y: 0,  opacity: 1, ease: 'power2.out', stagger: 0.12,
+      { y: 35, opacity: 0 },
+      { y: 0,  opacity: 1, ease: 'power2.out', stagger: 0.10,
         scrollTrigger: {
-          trigger: section,
-          start: 'top 75%',
-          end:   'top 25%',
-          scrub: 0.6,
-          invalidateOnRefresh: true,
+          trigger: section, start: 'top 75%', end: 'top 25%',
+          scrub: 0.6, invalidateOnRefresh: true,
         }
       }
     );
+
+    // ── EXIT: everything fades + shifts up as section leaves ──
+    gsap.to(allEls, {
+      y: -40, opacity: 0, ease: 'power2.in', stagger: 0.05,
+      scrollTrigger: {
+        trigger: section, start: 'bottom 75%', end: 'bottom 10%',
+        scrub: 0.6, invalidateOnRefresh: true,
+      }
+    });
   })();
 
   // ── STATS COUNTER ──
