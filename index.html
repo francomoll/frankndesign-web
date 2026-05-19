@@ -238,6 +238,9 @@ section{padding:6rem 3.5rem;}
 @media(max-width:900px){
   .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
   .pi-body{font-size:.83rem;}
+  /* On mobile: image covers portrait viewport, always visible (no GSAP opacity anim) */
+  .pi-diagram-wrap{opacity:1!important;transform:none!important;}
+  .pi-diagram{object-fit:cover;object-position:center;}
 }
 
 /* PROCESS SCROLL-DRIVEN CANVAS */
@@ -1350,8 +1353,8 @@ window.addEventListener('load', () => {
     ].filter(Boolean);
     const allEls = [...textEls, diagram].filter(Boolean);
 
-    // ── ENTER: diagram zooms+fades in, text rises ──
-    if (diagram) {
+    // ── ENTER: diagram zooms+fades in, text rises (desktop only) ──
+    if (diagram && !isMobile) {
       gsap.fromTo(diagram,
         { scale: 1.12, opacity: 0 },
         { scale: 1.0,  opacity: 1, ease: 'power2.out',
