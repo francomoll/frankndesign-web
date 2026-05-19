@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" class="preloading">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Our Work — FrankNDesign · Virtual Production & Themed Entertainment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<script>
+(function(){
+  var setVH=function(){document.documentElement.style.setProperty('--vh',(window.innerHeight*0.01)+'px');};
+  setVH();
+  window.addEventListener('orientationchange',function(){setTimeout(function(){setVH();if(window.ScrollTrigger)window.ScrollTrigger.refresh();},120);});
+  var lW=window.innerWidth,lH=window.innerHeight;
+  window.addEventListener('resize',function(){if(window.innerWidth!==lW||Math.abs(window.innerHeight-lH)>150){lW=window.innerWidth;lH=window.innerHeight;setVH();if(window.ScrollTrigger)window.ScrollTrigger.refresh();}});
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --white:#ffffff;--off-white:#f4f4f4;--warm-white:#f4f4f4;
+  --orange:#e30613;--orange-hover:#ff1a2a;--orange-pale:#fdecee;--orange-mid:#f9c5c9;
+  --black:#111111;--ink:#1c1c1c;--muted:#8a8a8a;--muted-light:#b5b5b5;
+  --border:#e6e6e6;--border-dark:#cccccc;
+  --font-d:'Bebas Neue',sans-serif;--font-b:'DM Sans',sans-serif;
+}
+body{background:var(--white);color:var(--ink);font-family:var(--font-b);font-weight:300;line-height:1.65;overflow-x:hidden;}
+.js-ready .reveal,.js-ready .reveal-l,.js-ready .reveal-r,.js-ready .reveal-scale{visibility:visible;}
+
+/* ── NAV ── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:1.1rem 3.5rem;display:flex;align-items:center;justify-content:space-between;transition:background .4s,padding .4s,box-shadow .4s;}
+#nav.scrolled{background:rgba(255,255,255,.97);backdrop-filter:blur(16px);padding:.8rem 3.5rem;box-shadow:0 1px 0 var(--border);}
+.nav-logo{text-decoration:none;display:flex;align-items:center;}
+.nav-logo-img{height:38px;width:auto;display:block;filter:brightness(0) invert(1);transition:filter .4s;}
+#nav.scrolled .nav-logo-img{filter:none;}
+.nav-links{display:flex;gap:2.4rem;list-style:none;align-items:center;}
+.nav-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;transition:color .25s;}
+#nav.scrolled .nav-links a{color:var(--muted);}
+.nav-links a:hover,.nav-links a.active{color:var(--orange)!important;}
+.nav-cta{background:var(--orange)!important;color:var(--white)!important;padding:.5rem 1.5rem;border-radius:2px;font-weight:500!important;}
+.nav-cta:hover{background:var(--orange-hover)!important;}
+.nav-burger{display:none;width:38px;height:38px;background:transparent;border:none;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0;}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--white);transition:transform .35s,opacity .25s,background .25s;border-radius:1px;}
+#nav.scrolled .nav-burger span{background:var(--ink);}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);background:var(--white);}
+.nav-burger.open span:nth-child(2){opacity:0;}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:var(--white);}
+
+/* ── BUTTONS ── */
+.btn-orange{background:var(--orange);color:var(--white);padding:.88rem 2.2rem;text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;transition:background .3s,transform .2s;display:inline-block;}
+.btn-orange:hover{background:var(--orange-hover);transform:translateY(-1px);}
+.btn-ghost-white{color:rgba(255,255,255,.65);text-decoration:none;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.5rem;transition:color .25s;}
+.btn-ghost-white:hover{color:var(--white);}
+.btn-ghost-white::after{content:'→';}
+.btn-cta{background:var(--orange);color:var(--white);padding:.95rem 2.8rem;font-family:var(--font-b);font-size:.8rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;border:none;cursor:pointer;position:relative;z-index:1;transition:background .3s,transform .2s,box-shadow .3s;text-decoration:none;display:inline-block;}
+.btn-cta:hover{background:var(--orange-hover);transform:translateY(-2px);box-shadow:0 12px 38px rgba(227,6,19,.45);}
+
+/* ── SECTIONS ── */
+section{padding:6rem 3.5rem;}
+.sec-eye{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;}
+.sec-eye::before{content:'';width:26px;height:1px;background:var(--orange);}
+.sec-h2{font-family:var(--font-d);font-size:clamp(2.6rem,4.5vw,4.5rem);line-height:.95;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);}
+.sec-body{color:var(--muted);font-size:.96rem;line-height:1.85;}
+
+/* ── PRELOADER ── */
+#preloader{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;transition:opacity .7s ease,visibility .7s;}
+#preloader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+#preloader .pre-logo{height:54px;width:auto;opacity:0;animation:preFadeIn .7s ease .1s forwards;filter:brightness(0) invert(1);}
+#preloader .pre-line{width:60px;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;opacity:0;animation:preFadeIn .5s ease .3s forwards,preExpand .8s ease .5s forwards;}
+@keyframes preFadeIn{to{opacity:1;}}
+@keyframes preExpand{to{transform:scaleX(1);}}
+html.preloading,body.preloading{overflow:hidden;}
+
+/* ── SCROLL HINT ── */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:.6rem;pointer-events:none;}
+.scroll-line{width:1px;height:34px;background:linear-gradient(to bottom,var(--orange),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+.scroll-txt{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+@keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:1;}50%{transform:scaleY(.4);opacity:.4;}}
+
+/* ── HERO ── */
+#work-hero{position:relative;height:calc(var(--vh,1vh)*100);display:flex;align-items:center;background:var(--black);overflow:hidden;padding:0;}
+.wh-bg{position:absolute;inset:0;}
+.wh-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:.45;}
+.wh-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(17,17,17,.88) 0%,rgba(17,17,17,.45) 60%,rgba(17,17,17,.1) 100%),linear-gradient(to top,rgba(17,17,17,.75) 0%,transparent 50%);}
+.wh-content{position:relative;z-index:2;padding:0 3.5rem;max-width:1200px;margin:0 auto;width:100%;}
+.wh-eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--orange);margin-bottom:1.6rem;display:flex;align-items:center;gap:.9rem;}
+.wh-eyebrow::before{content:'';width:38px;height:1px;background:var(--orange);}
+.wh-h1{font-family:var(--font-d);font-size:clamp(3.8rem,9vw,9rem);line-height:.9;letter-spacing:.01em;text-transform:uppercase;color:var(--white);max-width:14ch;margin-bottom:1.8rem;}
+.wh-h1 em{font-style:normal;color:var(--orange);}
+.wh-sub{font-size:1.05rem;color:rgba(255,255,255,.55);max-width:480px;line-height:1.75;margin-bottom:2.4rem;}
+.wh-meta{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;}
+.wh-stat{text-align:left;}
+.wh-stat-n{font-family:var(--font-d);font-size:2.4rem;color:var(--white);line-height:1;}
+.wh-stat-l{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:.2rem;}
+.wh-divider{width:1px;height:40px;background:rgba(255,255,255,.18);}
+
+/* ── FILTER BAR ── */
+#filter-bar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 3.5rem;display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;box-shadow:0 4px 24px rgba(0,0,0,.06);}
+#filter-bar::-webkit-scrollbar{display:none;}
+.filter-btn{flex-shrink:0;background:none;border:none;cursor:pointer;font-family:var(--font-b);font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:1.1rem 1.5rem;border-bottom:2px solid transparent;transition:color .25s,border-color .25s;white-space:nowrap;}
+.filter-btn:hover{color:var(--ink);}
+.filter-btn.active{color:var(--orange);border-bottom-color:var(--orange);}
+.filter-count{display:inline-block;background:var(--orange-pale);color:var(--orange);border-radius:20px;font-size:.58rem;padding:.1rem .45rem;margin-left:.4rem;font-weight:600;vertical-align:middle;}
+
+/* ── WORK GRID ── */
+#work-grid{padding:4rem 3.5rem 7rem;}
+.work-grid-inner{display:flex;flex-direction:column;gap:1.2rem;}
+
+/* Featured card */
+.proj-featured{position:relative;width:100%;height:560px;overflow:hidden;border-radius:6px;cursor:pointer;}
+.proj-featured img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,1,.36,1);}
+.proj-featured:hover img{transform:scale(1.03);}
+.proj-featured .proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.92) 0%,rgba(17,17,17,.12) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:2.8rem;}
+.feat-badge{display:inline-block;background:var(--orange);color:var(--white);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:.9rem;font-weight:600;}
+
+/* Project card grid rows */
+.proj-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.proj-row-2{display:grid;grid-template-columns:2fr 1fr;gap:1.2rem;}
+.proj-row-2r{display:grid;grid-template-columns:1fr 2fr;gap:1.2rem;}
+.proj-card{position:relative;overflow:hidden;border-radius:6px;cursor:pointer;background:var(--off-white);}
+.proj-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .9s cubic-bezier(.22,1,.36,1);}
+.proj-card:hover img{transform:scale(1.06);}
+.proj-card .proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(17,17,17,.88) 0%,rgba(17,17,17,.06) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.6rem;}
+.proj-card.tall{height:400px;}
+.proj-card.med{height:320px;}
+.proj-card.short{height:240px;}
+.proj-overlay .proj-tag{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.35rem;}
+.proj-overlay .proj-name{font-family:var(--font-d);font-size:1.6rem;line-height:1;text-transform:uppercase;letter-spacing:.02em;color:var(--white);}
+.proj-overlay .proj-sub{font-size:.76rem;color:rgba(255,255,255,.45);margin-top:.35rem;}
+.proj-overlay .proj-reveal{margin-top:.7rem;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s;display:inline-flex;align-items:center;gap:.4rem;}
+.proj-overlay .proj-reveal::after{content:'→';}
+.proj-card:hover .proj-reveal,.proj-featured:hover .proj-reveal{opacity:1;transform:none;}
+
+/* Hidden when filtered */
+.proj-item{transition:opacity .3s;}
+.proj-item.hidden{display:none;}
+
+/* ── CASE STUDY TEASER ── */
+#cs-teaser{background:var(--black);padding:6rem 3.5rem;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+#cs-teaser::before{content:'TOKYO';position:absolute;font-family:var(--font-d);font-size:18rem;color:rgba(255,255,255,.025);top:50%;left:-2rem;transform:translateY(-50%);white-space:nowrap;pointer-events:none;letter-spacing:.08em;}
+.cs-t-tag{display:inline-block;background:rgba(227,6,19,.15);border:1px solid rgba(227,6,19,.35);color:var(--orange);padding:.3rem .9rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;border-radius:2px;margin-bottom:1.4rem;}
+.cs-t-h2{font-family:var(--font-d);font-size:clamp(3rem,6vw,6rem);text-transform:uppercase;line-height:.9;color:var(--white);margin-bottom:1.4rem;}
+.cs-t-h2 em{font-style:normal;color:var(--orange);}
+.cs-t-body{font-size:.93rem;color:rgba(255,255,255,.5);line-height:1.85;max-width:440px;margin-bottom:2rem;}
+.cs-t-metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);margin-bottom:2.5rem;}
+.cs-t-metric{padding:1rem 1.2rem;background:rgba(17,17,17,.6);}
+.cs-t-metric-n{font-family:var(--font-d);font-size:1.7rem;color:var(--orange);line-height:1;}
+.cs-t-metric-l{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.2rem;}
+.cs-t-img{border-radius:4px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5);}
+.cs-t-img img{width:100%;display:block;border-radius:4px;}
+
+/* ── BRANDS MARQUEE ── */
+#brands{background:var(--off-white);padding:3rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;}
+.brands-lbl{text-align:center;font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted-light);margin-bottom:2rem;}
+.brands-wrap{overflow:hidden;mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%);}
+.brands-track{display:flex;gap:3.5rem;animation:brandScroll 28s linear infinite;width:max-content;}
+.brands-track:hover{animation-play-state:paused;}
+@keyframes brandScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.brand-chip{font-family:var(--font-d);font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;color:var(--border-dark);flex-shrink:0;white-space:nowrap;display:flex;align-items:center;gap:.9rem;transition:color .3s;cursor:default;}
+.brand-chip::before{content:'◆';font-size:.32rem;color:var(--orange);}
+.brand-chip:hover{color:var(--ink);}
+
+/* ── STATS BAR ── */
+#stats{background:var(--orange);display:grid;grid-template-columns:repeat(4,1fr);}
+.stat{padding:1.8rem 1.5rem;text-align:center;border-right:1px solid rgba(255,255,255,.2);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:var(--font-d);font-size:3rem;color:var(--white);line-height:1;}
+.stat-l{font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:.35rem;}
+
+/* ── CTA ── */
+#cta{background:var(--black);padding:5.5rem 3.5rem;text-align:center;position:relative;overflow:hidden;}
+#cta::before{content:'FRANKNDESIGN';position:absolute;font-family:var(--font-d);font-size:16rem;color:rgba(255,255,255,.025);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;letter-spacing:.1em;}
+.cta-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,5.8rem);text-transform:uppercase;line-height:.95;position:relative;z-index:1;margin-bottom:1rem;color:var(--white);}
+.cta-h2 em{font-style:normal;color:var(--orange);}
+.cta-sub{font-size:.95rem;color:rgba(255,255,255,.5);position:relative;z-index:1;margin-bottom:2.2rem;max-width:460px;margin-left:auto;margin-right:auto;}
+
+/* ── FOOTER ── */
+footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.5rem 3.5rem 2rem;}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-logo-img{height:42px;width:auto;display:block;margin-bottom:1rem;}
+.footer-tag{font-size:.82rem;color:var(--muted);line-height:1.6;max-width:240px;}
+.footer-col-h{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-light);margin-bottom:1.1rem;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.83rem;transition:color .25s;}
+.footer-links a:hover{color:var(--orange);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.4rem;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-size:.72rem;color:var(--muted-light);}
+.socials{display:flex;gap:.6rem;}
+.soc{width:32px;height:32px;border:1px solid var(--border-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;font-size:.7rem;transition:border-color .25s,color .25s,background .25s;}
+.soc:hover{border-color:var(--orange);color:var(--white);background:var(--orange);}
+
+/* ── LIGHTBOX ── */
+#lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(17,17,17,.96);justify-content:center;align-items:center;}
+#lb.open{display:flex;}
+#lb img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:3px;}
+#lb-close{position:absolute;top:1.5rem;right:2rem;color:var(--white);font-size:2rem;cursor:pointer;opacity:.5;transition:opacity .2s;background:none;border:none;}
+#lb-close:hover{opacity:1;}
+#lb-prev,#lb-next{position:absolute;top:50%;transform:translateY(-50%);font-size:2.5rem;color:rgba(255,255,255,.35);cursor:pointer;background:none;border:none;padding:1rem;transition:color .2s;user-select:none;}
+#lb-prev{left:1rem;}#lb-next{right:1rem;}
+#lb-prev:hover,#lb-next:hover{color:var(--orange);}
+#lb-caption{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:.78rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-align:center;}
+
+/* ── RESPONSIVE ── */
+
+/* Tablet landscape (≤1100px) — 3-col grid becomes 2-col early */
+@media(max-width:1100px){
+  .proj-row-3{grid-template-columns:1fr 1fr;}
+  .proj-card.tall{height:360px;}
+  #work-grid{padding:4rem 2.5rem 6rem;}
+}
+
+/* Tablet portrait + mobile (≤900px) */
+@media(max-width:900px){
+  /* nav */
+  #nav{padding:.9rem 1.5rem;}
+  #nav.scrolled{padding:.7rem 1.5rem;}
+  .nav-burger{display:flex;z-index:300;}
+  .nav-links{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--black);flex-direction:column;justify-content:center;align-items:center;gap:1.8rem;padding:2rem;z-index:250;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .35s,visibility .35s,transform .4s ease;}
+  .nav-links.open{opacity:1;visibility:visible;transform:translateY(0);}
+  .nav-links li{width:100%;text-align:center;}
+  .nav-links a{font-size:1.05rem;letter-spacing:.16em;color:rgba(255,255,255,.85)!important;display:inline-block;padding:.4rem 0;}
+  .nav-links .nav-cta{padding:.75rem 2.4rem;font-size:.85rem;display:inline-block;margin-top:.6rem;}
+  /* sections */
+  section{padding:4rem 1.5rem;}
+  /* hero */
+  .wh-content{padding:0 1.5rem;}
+  .wh-h1{font-size:clamp(2.8rem,12vw,5rem);max-width:100%;}
+  .wh-sub{font-size:.9rem;max-width:100%;margin-bottom:1.8rem;}
+  .wh-meta{gap:1.4rem;}
+  .wh-stat-n{font-size:2rem;}
+  .wh-stat-l{font-size:.58rem;}
+  .wh-divider{height:28px;}
+  /* grid */
+  #work-grid{padding:2.5rem 1.5rem 4rem;}
+  .work-grid-inner{gap:.8rem;}
+  .proj-featured{height:300px;}
+  .proj-featured .proj-overlay{padding:1.4rem;}
+  .proj-row-3{grid-template-columns:1fr 1fr;gap:.8rem;}
+  .proj-row-2,.proj-row-2r{grid-template-columns:1fr;gap:.8rem;}
+  .proj-card.tall{height:280px;}
+  .proj-card.med{height:240px;}
+  .proj-card .proj-overlay{padding:1.2rem;}
+  .proj-overlay .proj-name{font-size:1.35rem;}
+  /* filter */
+  #filter-bar{padding:0 1.5rem;}
+  .filter-btn{padding:1rem 1.1rem;font-size:.68rem;}
+  /* case study */
+  #cs-teaser{grid-template-columns:1fr;gap:2.5rem;padding:4rem 1.5rem;}
+  #cs-teaser::before{font-size:6rem;}
+  .cs-t-h2{font-size:clamp(2.4rem,10vw,4rem);}
+  .cs-t-body{max-width:100%;}
+  /* stats */
+  #stats{grid-template-columns:1fr 1fr;}
+  .stat{padding:1.4rem 1rem;}
+  .stat:nth-child(2){border-right:none;}
+  .stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,.2);}
+  .stat-n{font-size:2.4rem;}
+  /* footer */
+  footer{padding:3rem 1.5rem 1.5rem;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
+  .footer-bottom{flex-direction:column;gap:1rem;text-align:center;}
+}
+
+/* Mobile (≤540px) */
+@media(max-width:540px){
+  /* hero */
+  .wh-h1{font-size:clamp(2.2rem,13vw,3.5rem);}
+  .wh-sub{font-size:.84rem;}
+  .wh-meta{gap:.9rem;flex-wrap:wrap;}
+  .wh-stat-n{font-size:1.7rem;}
+  .wh-divider{height:22px;}
+  /* grid */
+  .proj-featured{height:240px;}
+  .proj-row-3{grid-template-columns:1fr;}
+  .proj-row-2,.proj-row-2r{grid-template-columns:1fr;}
+  .proj-card.tall,.proj-card.med{height:220px;}
+  /* filter */
+  #filter-bar{padding:0 1rem;}
+  .filter-btn{padding:.85rem .8rem;font-size:.62rem;letter-spacing:.08em;}
+  /* case study */
+  #cs-teaser::before{display:none;}
+  .cs-t-metrics{grid-template-columns:1fr 1fr;}
+  /* stats */
+  .stat-l{font-size:.54rem;}
+  /* footer — single column */
+  .footer-top{grid-template-columns:1fr;}
+  .footer-top > div + div{margin-top:.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <img class="pre-logo" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/>
+  <div class="pre-line"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lb" role="dialog" aria-modal="true">
+  <button id="lb-close" aria-label="Close">×</button>
+  <button id="lb-prev" aria-label="Previous">‹</button>
+  <img id="lb-img" src="" alt=""/>
+  <button id="lb-next" aria-label="Next">›</button>
+  <div id="lb-caption"></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><img class="nav-logo-img" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/></a>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="work.html" class="active">Work</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#process">Process</a></li>
+    <li><a href="index.html#casestudy">Case Study</a></li>
+    <li><a href="about.html">Studio</a></li>
+    <li><a href="https://frankndesign.com/contact/" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="work-hero">
+  <div class="wh-bg">
+    <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" alt="FrankNDesign — Our Work"/>
+  </div>
+  <div class="wh-overlay"></div>
+  <div class="wh-content">
+    <div class="wh-eyebrow">Portfolio · Featured Projects</div>
+    <h1 class="wh-h1">Award-Winning<br><em>Results.</em></h1>
+    <p class="wh-sub">From concept to construction — our projects shape the world's most iconic theme parks, attractions, and entertainment experiences.</p>
+    <div class="wh-meta">
+      <div class="wh-stat">
+        <div class="wh-stat-n">50+</div>
+        <div class="wh-stat-l">Projects Delivered</div>
+      </div>
+      <div class="wh-divider"></div>
+      <div class="wh-stat">
+        <div class="wh-stat-n">3</div>
+        <div class="wh-stat-l">Industry Awards</div>
+      </div>
+      <div class="wh-divider"></div>
+      <div class="wh-stat">
+        <div class="wh-stat-n">98.4%</div>
+        <div class="wh-stat-l">Coordination Accuracy</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-txt">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── FILTER BAR ── -->
+<div id="filter-bar">
+  <button class="filter-btn active" data-filter="all">All <span class="filter-count">9</span></button>
+  <button class="filter-btn" data-filter="theme-parks">Theme Parks <span class="filter-count">4</span></button>
+  <button class="filter-btn" data-filter="attractions">Attractions <span class="filter-count">3</span></button>
+  <button class="filter-btn" data-filter="cruise">Cruise Entertainment <span class="filter-count">2</span></button>
+</div>
+
+<!-- ── PROJECTS GRID ── -->
+<div id="work-grid">
+  <div class="work-grid-inner">
+
+    <!-- Featured: Hagrid's -->
+    <div class="proj-item" data-category="theme-parks">
+      <div class="proj-featured lb-trigger reveal-scale"
+           data-src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp"
+           data-cap="Hagrid's Magical Creatures Motorbike Adventure — Universal Studios Florida">
+        <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp"
+             alt="Hagrid's Magical Creatures Motorbike Adventure" loading="lazy"/>
+        <div class="proj-overlay">
+          <span class="feat-badge">Featured Project</span>
+          <div class="proj-tag">Theme Park · Universal Studios Florida</div>
+          <div class="proj-name">Hagrid's Magical Creatures<br>Motorbike Adventure</div>
+          <div class="proj-sub">Virtual production, show set documentation &amp; BIM coordination</div>
+          <div class="proj-reveal">View Gallery</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: Hagrid's detail + Super Nintendo World + Mario Kart -->
+    <div class="proj-row-3">
+      <div class="proj-item" data-category="theme-parks">
+        <div class="proj-card tall lb-trigger reveal"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-2-768x513.webp"
+             data-cap="Hagrid's Magical Creatures — Detail">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-2-768x513.webp"
+               alt="Hagrid's detail" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Universal Studios Florida</div>
+            <div class="proj-name">Hagrid's — Detail</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item" data-category="theme-parks">
+        <div class="proj-card tall lb-trigger reveal d1"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/Super-Nintendo-World-768x432.webp"
+             data-cap="Super Nintendo World — Universal Studios Hollywood">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/Super-Nintendo-World-768x432.webp"
+               alt="Super Nintendo World" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Theme Park · Hollywood, CA</div>
+            <div class="proj-name">Super Nintendo World</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item" data-category="theme-parks">
+        <div class="proj-card tall lb-trigger reveal d2"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™BowserChallenge-768x482.webp"
+             data-cap="Mario Kart™: Bowser's Challenge — Universal Studios">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™BowserChallenge-768x482.webp"
+               alt="Mario Kart Bowser's Challenge" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Attraction · Universal</div>
+            <div class="proj-name">Mario Kart™:<br>Bowser's Challenge</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: Mario Kart Interior + View Boston 3D Model -->
+    <div class="proj-row-2 reveal">
+      <div class="proj-item" data-category="theme-parks">
+        <div class="proj-card med lb-trigger"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™-Bowsers-Challenge-768x488.webp"
+             data-cap="Mario Kart™ — Interior Detail">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/Mario-Kart™-Bowsers-Challenge-768x488.webp"
+               alt="Mario Kart interior" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Show Set Design · Universal</div>
+            <div class="proj-name">Mario Kart™ — Interior</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item" data-category="attractions">
+        <div class="proj-card med lb-trigger"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Projection-Mapped-3D-Printed-Model-768x538.webp"
+             data-cap="View Boston — Projection Mapped 3D Printed Model">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Projection-Mapped-3D-Printed-Model-768x538.webp"
+               alt="View Boston 3D printed model" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Attraction · Boston, MA</div>
+            <div class="proj-name">View Boston — 3D Model</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: View Boston cast models x2 + MSC Robotron -->
+    <div class="proj-row-3">
+      <div class="proj-item" data-category="attractions">
+        <div class="proj-card med lb-trigger reveal"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-768x545.webp"
+             data-cap="View Boston — Tactile Cast Models">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-768x545.webp"
+               alt="View Boston cast models" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Boston, MA</div>
+            <div class="proj-name">View Boston — Cast Models</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item" data-category="attractions">
+        <div class="proj-card med lb-trigger reveal d1"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-02-768x512.webp"
+             data-cap="View Boston — Detail">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/View-Boston-Tactile-Cast-Models-02-768x512.webp"
+               alt="View Boston detail" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Boston, MA</div>
+            <div class="proj-name">View Boston — Detail</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item" data-category="cruise">
+        <div class="proj-card med lb-trigger reveal d2"
+             data-src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-768x432.webp"
+             data-cap="MSC Cruises — Robotron">
+          <img src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-768x432.webp"
+               alt="MSC Cruises Robotron" loading="lazy"/>
+          <div class="proj-overlay">
+            <div class="proj-tag">Cruise Entertainment · MSC</div>
+            <div class="proj-name">MSC Cruises — Robotron</div>
+            <div class="proj-reveal">View</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured: MSC Cruises full -->
+    <div class="proj-item" data-category="cruise">
+      <div class="proj-featured lb-trigger reveal-scale"
+           data-src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-02-768x512.webp"
+           data-cap="MSC Cruises Robotron — Full Experience">
+        <img src="https://frankndesign.com/wp-content/uploads/2026/03/MSC-Cruises-Robotron-02-768x512.webp"
+             alt="MSC Cruises Robotron full" loading="lazy"/>
+        <div class="proj-overlay">
+          <div class="proj-tag">Cruise Ship Entertainment · MSC Cruises</div>
+          <div class="proj-name">Robotron — Full Experience</div>
+          <div class="proj-sub">End-to-end show set documentation and virtual production</div>
+          <div class="proj-reveal">View Gallery</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /work-grid-inner -->
+</div><!-- /work-grid -->
+
+<!-- ── CASE STUDY TEASER ── -->
+<section id="cs-teaser">
+  <div class="reveal-l">
+    <span class="cs-t-tag">Case Study</span>
+    <h2 class="cs-t-h2">Tokyo<br><em>Streets</em></h2>
+    <p class="cs-t-body">FrankNDesign developed "Tokyo Streets" to illustrate our full documentation process — from first-hand Tokyo research and conceptual sketches through fully-coordinated construction documentation models.</p>
+    <div class="cs-t-metrics">
+      <div class="cs-t-metric"><div class="cs-t-metric-n">100+</div><div class="cs-t-metric-l">Unique Prop Sheets</div></div>
+      <div class="cs-t-metric"><div class="cs-t-metric-n">1</div><div class="cs-t-metric-l">Unified Master Model</div></div>
+      <div class="cs-t-metric"><div class="cs-t-metric-n">Multi</div><div class="cs-t-metric-l">Discipline Coordination</div></div>
+      <div class="cs-t-metric"><div class="cs-t-metric-n">Zero</div><div class="cs-t-metric-l">Scope Gaps</div></div>
+    </div>
+    <a href="index.html#casestudy" class="btn-orange">View Full Case Study →</a>
+  </div>
+  <div class="cs-t-img reveal-r">
+    <img src="https://frankndesign.com/wp-content/uploads/2026/03/85863320-f291-4ecb-9ff9-656c7cbcb609_rw_1200.webp"
+         alt="Tokyo Streets case study" loading="lazy"/>
+  </div>
+</section>
+
+<!-- ── BRANDS MARQUEE ── -->
+<div id="brands">
+  <div class="brands-lbl">Clients &amp; Partners We've Worked With</div>
+  <div class="brands-wrap">
+    <div class="brands-track">
+      <span class="brand-chip">Universal Studios</span><span class="brand-chip">MSC Cruises</span><span class="brand-chip">Nintendo</span><span class="brand-chip">Warner Bros</span><span class="brand-chip">View Boston</span><span class="brand-chip">Herschend Entertainment</span><span class="brand-chip">Thinkwell Group</span><span class="brand-chip">PGAV Destinations</span><span class="brand-chip">JRA</span><span class="brand-chip">BRC Imagination Arts</span><span class="brand-chip">Firefly Creative</span><span class="brand-chip">Adirondack Studios</span>
+      <span class="brand-chip">Universal Studios</span><span class="brand-chip">MSC Cruises</span><span class="brand-chip">Nintendo</span><span class="brand-chip">Warner Bros</span><span class="brand-chip">View Boston</span><span class="brand-chip">Herschend Entertainment</span><span class="brand-chip">Thinkwell Group</span><span class="brand-chip">PGAV Destinations</span><span class="brand-chip">JRA</span><span class="brand-chip">BRC Imagination Arts</span><span class="brand-chip">Firefly Creative</span><span class="brand-chip">Adirondack Studios</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div id="stats">
+  <div class="stat reveal"><div class="stat-n">50+</div><div class="stat-l">Projects Delivered</div></div>
+  <div class="stat reveal d1"><div class="stat-n">19+</div><div class="stat-l">Years Experience</div></div>
+  <div class="stat reveal d2"><div class="stat-n">3</div><div class="stat-l">Industry Awards</div></div>
+  <div class="stat reveal d3"><div class="stat-n">98.4%</div><div class="stat-l">Coordination Accuracy</div></div>
+</div>
+
+<!-- ── CTA ── -->
+<section id="cta">
+  <h2 class="cta-h2 reveal">Let's Build Your<br><em>Next Project.</em></h2>
+  <p class="cta-sub reveal d1">Tell us about your vision. We'll map the path from concept to reality.</p>
+  <a href="https://frankndesign.com/contact/" class="btn-cta reveal d2">Start the Conversation →</a>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <img class="footer-logo-img" src="assets/FrankNDesign Logo.webp" alt="FrankNDesign"/>
+      <p class="footer-tag">Leaders in virtual production and documentation for projects that draw people together.</p>
+    </div>
+    <div>
+      <div class="footer-col-h">Services</div>
+      <ul class="footer-links">
+        <li><a href="index.html#services">Design</a></li>
+        <li><a href="index.html#services">Virtual Production</a></li>
+        <li><a href="index.html#services">BIM Management</a></li>
+        <li><a href="index.html#services">Visualization</a></li>
+        <li><a href="index.html#services">Strategic Planning</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Studio</div>
+      <ul class="footer-links">
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="about.html#team-about">Leadership</a></li>
+        <li><a href="index.html#process">Our Process</a></li>
+        <li><a href="index.html#casestudy">Case Studies</a></li>
+        <li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Connect</div>
+      <ul class="footer-links">
+        <li><a href="https://frankndesign.com/contact/">Contact Us</a></li>
+        <li><a href="https://www.linkedin.com/company/frankndesign/" target="_blank">LinkedIn</a></li>
+        <li><a href="https://www.instagram.com/frankndesign/" target="_blank">Instagram</a></li>
+        <li><a href="https://x.com/frankndesign" target="_blank">Twitter / X</a></li>
+        <li><a href="https://www.facebook.com/frankndesign" target="_blank">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 FrankNDesign LLC · Clermont, Florida</span>
+    <div class="socials">
+      <a href="https://www.linkedin.com/company/frankndesign/" class="soc" target="_blank">in</a>
+      <a href="https://www.instagram.com/frankndesign/" class="soc" target="_blank">ig</a>
+      <a href="https://x.com/frankndesign" class="soc" target="_blank">x</a>
+      <a href="https://www.facebook.com/frankndesign" class="soc" target="_blank">fb</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('load', () => {
+  document.documentElement.classList.add('js-ready');
+  const isMobile = window.innerWidth <= 900;
+  const reduced  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── Dismiss preloader
+  setTimeout(() => document.getElementById('preloader').classList.add('gone'), 600);
+
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
+  }
+
+  // ── LENIS
+  if (!isMobile && !reduced && window.Lenis) {
+    const lenis = new Lenis({ duration:1.15, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)), smoothWheel:true, smoothTouch:false });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // ── MOBILE BURGER
+  const burger = document.getElementById('navBurger');
+  const navLinks = document.getElementById('navLinks');
+  if (burger && navLinks) {
+    const closeMenu = () => { burger.classList.remove('open'); navLinks.classList.remove('open'); burger.setAttribute('aria-expanded','false'); document.body.style.overflow=''; };
+    burger.addEventListener('click', () => { const o=burger.classList.toggle('open'); navLinks.classList.toggle('open',o); burger.setAttribute('aria-expanded',String(o)); document.body.style.overflow=o?'hidden':''; });
+    navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+  }
+
+  // ── NAV SCROLL
+  const nav = document.getElementById('nav');
+  ScrollTrigger.create({ start:60, end:99999, onUpdate:self=>nav.classList.toggle('scrolled',self.scroll()>60) });
+
+  // ── REVEALS
+  [{ sel:'.reveal', from:{y:40,opacity:0} },{ sel:'.reveal-l', from:{x:-40,opacity:0} },{ sel:'.reveal-r', from:{x:40,opacity:0} },{ sel:'.reveal-scale', from:{scale:.94,opacity:0} }]
+    .forEach(({sel,from}) => {
+      document.querySelectorAll(sel).forEach(el => {
+        const d = Array.from(el.classList).find(c=>/^d[1-6]$/.test(c));
+        gsap.from(el, { ...from, duration:1.1, delay:d?parseInt(d.slice(1))*.08:0, ease:'power3.out', scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'} });
+      });
+    });
+
+  // ── STATS COUNTER
+  document.querySelectorAll('.stat-n, .wh-stat-n').forEach(el => {
+    const raw = el.textContent.trim();
+    const num = parseFloat(raw.replace(/[^0-9.]/g,''));
+    const suffix = raw.replace(/[0-9.]/g,'');
+    if (!num) return;
+    const dec = raw.includes('.')?((raw.split('.')[1]||'').replace(/\D/g,'').length):0;
+    ScrollTrigger.create({ trigger:el, start:'top 85%', once:true, onEnter:() => {
+      gsap.to({val:0},{val:num,duration:1.8,ease:'power2.out',onUpdate(){el.textContent=this.targets()[0].val.toFixed(dec)+suffix;}});
+    }});
+  });
+
+  // ── FILTER BAR
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projItems  = document.querySelectorAll('.proj-item');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.filter;
+      projItems.forEach(item => {
+        const match = cat === 'all' || item.dataset.category === cat;
+        item.classList.toggle('hidden', !match);
+      });
+      ScrollTrigger.refresh();
+    });
+  });
+
+  // ── MAGNETIC BTNS (desktop only)
+  if (!isMobile) {
+    document.querySelectorAll('.btn-orange,.btn-cta').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r=btn.getBoundingClientRect();
+        gsap.to(btn,{x:(e.clientX-r.left-r.width/2)*.22,y:(e.clientY-r.top-r.height/2)*.22,duration:.4,ease:'power2.out'});
+      });
+      btn.addEventListener('mouseleave',()=>gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'}));
+    });
+  }
+
+  // ── LIGHTBOX
+  (function(){
+    const lb=document.getElementById('lb');
+    const lbImg=document.getElementById('lb-img');
+    const lbCap=document.getElementById('lb-caption');
+    let triggers=[], cur=0;
+    function open(i){ cur=i; const t=triggers[i]; lbImg.src=t.dataset.src||t.src||''; lbCap.textContent=t.dataset.cap||''; lb.classList.add('open'); document.body.style.overflow='hidden'; }
+    function close(){ lb.classList.remove('open'); document.body.style.overflow=''; lbImg.src=''; }
+    function nav(d){ cur=(cur+d+triggers.length)%triggers.length; open(cur); }
+    document.querySelectorAll('.lb-trigger').forEach((el,i)=>{ triggers.push(el); el.addEventListener('click',()=>open(i)); });
+    document.getElementById('lb-close').addEventListener('click',close);
+    document.getElementById('lb-prev').addEventListener('click',()=>nav(-1));
+    document.getElementById('lb-next').addEventListener('click',()=>nav(1));
+    lb.addEventListener('click',e=>{if(e.target===lb)close();});
+    document.addEventListener('keydown',e=>{ if(!lb.classList.contains('open'))return; if(e.key==='Escape')close(); if(e.key==='ArrowLeft')nav(-1); if(e.key==='ArrowRight')nav(1); });
+  })();
+});
+</script>
+</body>
+</html>
