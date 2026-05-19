@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>About — FrankNDesign · Virtual Production & Themed Entertainment</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
+<link rel="preconnect" href="https://unpkg.com" crossorigin/>
+<link rel="dns-prefetch" href="https://frankndesign.com"/>
+<link rel="preload" as="image" href="assets/about-us-bg.webp" fetchpriority="high"/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
 <script>
 (function(){
@@ -283,7 +288,7 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
 <!-- ── HERO ── -->
 <section id="about-hero">
   <div class="ah-bg">
-    <img src="assets/about-us-bg.webp" alt="FrankNDesign — About Us"/>
+    <img src="assets/about-us-bg.webp" alt="FrankNDesign — About Us" fetchpriority="high" loading="eager" decoding="sync"/>
   </div>
   <div class="ah-overlay"></div>
   <div class="ah-content">
@@ -311,10 +316,10 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
   </div>
   <div class="mission-imgs reveal-r">
     <div class="mission-img-float">
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" alt="Hagrid's Magical Creatures — Universal Studios" loading="lazy"/>
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/Hagrids-Magical-Creatures-Motorbike-Adventure-768x512.webp" alt="Hagrid's Magical Creatures — Universal Studios" loading="lazy" decoding="async"/>
     </div>
     <div class="mission-img-main">
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/487ba2bb-d5e0-45ad-abee-af444344a638_rw_1920.webp" alt="Multi-discipline integrated 3D model" loading="lazy"/>
+      <img src="https://frankndesign.com/wp-content/uploads/2026/03/487ba2bb-d5e0-45ad-abee-af444344a638_rw_1920.webp" alt="Multi-discipline integrated 3D model" loading="lazy" decoding="async"/>
     </div>
     <div class="mission-badge">
       <div class="mission-badge-num">98.4%</div>
@@ -403,7 +408,7 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
     <!-- Francisco -->
     <div class="tm-card reveal">
       <div class="tm-photo-wrap">
-        <img src="assets/francisco.webp" alt="Francisco J. Núñez" loading="lazy"/>
+        <img src="assets/francisco.webp" alt="Francisco J. Núñez" loading="lazy" decoding="async"/>
       </div>
       <div class="tm-body">
         <div class="tm-name">Francisco J. Núñez</div>
@@ -419,7 +424,7 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
     <!-- Jeremy -->
     <div class="tm-card reveal">
       <div class="tm-photo-wrap">
-        <img src="assets/jeremy.webp" alt="Jeremy W. Grunert" loading="lazy"/>
+        <img src="assets/jeremy.webp" alt="Jeremy W. Grunert" loading="lazy" decoding="async"/>
       </div>
       <div class="tm-body">
         <div class="tm-name">Jeremy W. Grunert</div>
@@ -435,7 +440,7 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
     <!-- Carianne -->
     <div class="tm-card reveal">
       <div class="tm-photo-wrap">
-        <img src="assets/carianne.webp" alt="Carianne DePasqua" loading="lazy"/>
+        <img src="assets/carianne.webp" alt="Carianne DePasqua" loading="lazy" decoding="async"/>
       </div>
       <div class="tm-body">
         <div class="tm-name">Carianne DePasqua</div>
@@ -451,7 +456,7 @@ footer{background:var(--off-white);border-top:1px solid var(--border);padding:3.
     <!-- Patrick -->
     <div class="tm-card reveal">
       <div class="tm-photo-wrap">
-        <img src="assets/patrick.webp" alt="Patrick Witthaus" loading="lazy"/>
+        <img src="assets/patrick.webp" alt="Patrick Witthaus" loading="lazy" decoding="async"/>
       </div>
       <div class="tm-body">
         <div class="tm-name">Patrick Witthaus</div>
