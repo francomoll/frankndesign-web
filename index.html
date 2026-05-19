@@ -220,18 +220,38 @@ section{padding:6rem 3.5rem;}
 .svc-items li{font-size:.8rem;color:var(--muted);padding-left:.9rem;position:relative;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
-/* PROCESS */
-#process{background:var(--off-white);padding-top:6rem;padding-bottom:0;}
-.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3.5rem;padding-bottom:6rem;}
-.process-imgs{display:flex;flex-direction:column;gap:.6rem;}
-.process-imgs img{width:100%;border-radius:4px;display:block;box-shadow:0 4px 16px rgba(17,17,17,.07);}
-.pstep{padding:1.4rem 0;border-bottom:1px solid var(--border);}
-.pstep:last-child{border-bottom:none;}
-.pstep-num{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem;}
-.pstep-name{font-family:var(--font-d);font-size:1.35rem;text-transform:uppercase;margin-bottom:.5rem;color:var(--ink);}
-.pstep-body{font-size:.83rem;color:var(--muted);line-height:1.75;}
-.pstep-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.7rem;}
+/* PROCESS SCROLL-DRIVEN CANVAS */
+#process-scroll{position:relative;height:calc(var(--vh,1vh)*600);background:#111;padding:0!important;margin:0;}
+.process-sticky{position:sticky;top:0;height:calc(var(--vh,1vh)*100);width:100%;overflow:hidden;background:#111;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);}
+#process-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
+.process-vignette{position:absolute;inset:0;z-index:2;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.22) 55%,transparent 100%),linear-gradient(to bottom,rgba(0,0,0,.4) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.65) 100%);pointer-events:none;}
+.process-progress{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);z-index:6;}
+.process-progress-fill{height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left center;}
+.process-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;}
+.process-eyebrow-fixed{position:absolute;top:2.2rem;left:6vw;display:flex;align-items:center;gap:2rem;}
+.process-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:.7rem;}
+.process-eye::before{content:'';width:24px;height:1px;background:var(--orange);}
+.process-step-counter{font-size:.63rem;letter-spacing:.2em;color:rgba(255,255,255,.3);}
+#processStepNum{color:var(--white);transition:color .3s;}
+.process-scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 6vw;opacity:0;pointer-events:none;will-change:transform,opacity;}
+.process-scene::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 45%,transparent 75%);pointer-events:none;}
+.ps-num{font-size:.63rem;letter-spacing:.26em;text-transform:uppercase;color:var(--orange);margin-bottom:1.1rem;}
+.ps-h2{font-family:var(--font-d);font-size:clamp(2.6rem,5vw,5.5rem);line-height:.95;text-transform:uppercase;color:var(--white);max-width:14ch;margin-bottom:1.2rem;}
+.ps-h2 em{font-style:normal;color:var(--orange);}
+.ps-body{font-size:.88rem;color:rgba(255,255,255,.65);max-width:420px;line-height:1.8;}
+.ps-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem;}
+.ps-metrics{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem;margin-top:1.4rem;max-width:360px;}
+.ps-metric-n{font-family:var(--font-d);font-size:1.6rem;color:var(--orange);line-height:1;}
+.ps-metric-l{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:.15rem;}
+.ps-cta{display:inline-block;margin-top:1.4rem;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--white);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:2px;transition:color .25s,border-color .25s;pointer-events:auto;}
+.ps-cta:hover{color:var(--orange);border-color:var(--orange);}
 .ptag{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:var(--orange-pale);border:1px solid var(--orange-mid);padding:.2rem .6rem;border-radius:2px;}
+@media(max-width:900px){
+  #process-scroll{height:calc(var(--vh,1vh)*550)!important;}
+  .process-scene{padding:0 5vw!important;}
+  .ps-h2{font-size:clamp(2rem,9vw,3.2rem)!important;}
+  .ps-metrics{grid-template-columns:1fr 1fr;}
+}
 
 /* CASE STUDY — tighter, editorial, not overwhelming */
 #casestudy{background:var(--warm-white);padding:0;}
@@ -361,7 +381,7 @@ html.preloading,body.preloading{overflow:hidden;}
   .work-hdr{flex-direction:column;align-items:flex-start;gap:1rem;}
   /* Services 1 col on very narrow */
   @media(max-width:540px){.svc-grid{grid-template-columns:1fr;}.team-grid{grid-template-columns:1fr 1fr;}#stats .stat-l{font-size:.58rem;}}
-  #intro,#process .process-grid,.cs-intro{grid-template-columns:1fr!important;gap:2.5rem;}
+  #intro,.cs-intro{grid-template-columns:1fr!important;gap:2.5rem;}
   .gallery-grid3{grid-template-columns:1fr 1fr;}
   .gallery-grid2{grid-template-columns:1fr;}
   .team-grid{grid-template-columns:1fr 1fr;}
@@ -402,7 +422,7 @@ html.preloading,body.preloading{overflow:hidden;}
   <ul class="nav-links" id="navLinks">
     <li><a href="work.html">Work</a></li>
     <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
+    <li><a href="#process-scroll">Process</a></li>
     <li><a href="#casestudy">Case Study</a></li>
     <li><a href="about.html">Studio</a></li>
     <li><a href="https://frankndesign.com/contact/" class="nav-cta">Contact</a></li>
@@ -444,7 +464,7 @@ html.preloading,body.preloading{overflow:hidden;}
         <h2 class="hero-h2">Projects that<br><em>draw people together.</em></h2>
         <div class="hero-cta-row" style="margin-top:2.4rem;justify-content:center;">
           <a href="#work" class="btn-orange">View Our Work</a>
-          <a href="#process" class="btn-ghost-white">Our Process</a>
+          <a href="#process-scroll" class="btn-ghost-white">Our Process</a>
         </div>
       </div>
 
@@ -591,23 +611,55 @@ html.preloading,body.preloading{overflow:hidden;}
   </div>
 </section>
 
-<!-- PROCESS -->
-<section id="process">
-  <div class="sec-eye reveal">How We Work</div>
-  <h2 class="sec-h2 reveal d1">Our Process Simplifies<br>Your Project</h2>
-  <p class="sec-body reveal d2" style="margin-top:1rem;max-width:600px;">We break down design silos and centralize project information into a single, accessible, data-rich virtual environment — so every discipline works from one truth.</p>
-  <div class="process-grid">
-    <div class="process-imgs reveal-l">
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/eed4cb84-b12c-42e5-9e04-afb9629bdf9c_rw_1920.webp" alt="Integrated BIM model" loading="lazy"/>
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/569754cc-7057-4c53-8d93-63f19add37cc_rw_1920.webp" alt="Construction documents" loading="lazy"/>
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/3ca78901-f4a6-4389-9694-148d0308d24b_rw_600-1.gif" alt="Real-time model animation" loading="lazy"/>
-    </div>
-    <div class="reveal-r" style="padding-top:.5rem;">
-      <div class="pstep"><div class="pstep-num">01 — DISCOVER</div><div class="pstep-name">Research &amp; Strategy</div><div class="pstep-body">Deep-dive into project requirements, stakeholder goals, and creative intent. We establish scope, standards, and technical approach before any model begins.</div></div>
-      <div class="pstep"><div class="pstep-num">02 — MODEL</div><div class="pstep-name">Integrated 3D Build</div><div class="pstep-body">All disciplines centralized into a single, information-rich virtual environment — enabling accurate cost estimation and early conflict detection.</div><div class="pstep-tags"><span class="ptag">Revit</span><span class="ptag">BIM 360</span><span class="ptag">3ds Max</span><span class="ptag">Unreal Engine</span></div></div>
-      <div class="pstep"><div class="pstep-num">03 — COORDINATE</div><div class="pstep-name">Cross-Discipline Review</div><div class="pstep-body">Real-time clash detection surfaces and resolves issues before construction — reducing change orders and protecting creative intent.</div></div>
-      <div class="pstep"><div class="pstep-num">04 — DOCUMENT</div><div class="pstep-name">Construction Documentation</div><div class="pstep-body">Production-ready documents, shop drawings, and data-rich schedules — all from the same master model.</div></div>
-      <div class="pstep"><div class="pstep-num">05 — VISUALIZE</div><div class="pstep-name">Render &amp; Deliver</div><div class="pstep-body">The same model powers renderings, animations, and animatics for marketing or stakeholder presentations. Visualization and production are never siloed.</div></div>
+<!-- PROCESS SCROLL-DRIVEN CANVAS -->
+<section id="process-scroll">
+  <div class="process-sticky">
+    <canvas id="process-canvas" width="1600" height="900"></canvas>
+    <div class="process-vignette"></div>
+    <div class="process-progress"><div class="process-progress-fill"></div></div>
+    <div class="process-overlay">
+      <div class="process-eyebrow-fixed">
+        <span class="process-eye">How We Work</span>
+        <span class="process-step-counter"><span id="processStepNum">01</span> / 05</span>
+      </div>
+
+      <div class="process-scene" data-step="1">
+        <div class="ps-num">01 — Discover</div>
+        <h2 class="ps-h2">Research &amp;<br><em>Strategy</em></h2>
+        <p class="ps-body">Deep-dive into project requirements, stakeholder goals, and creative intent. We establish scope, standards, and technical approach before any model begins.</p>
+      </div>
+
+      <div class="process-scene" data-step="2">
+        <div class="ps-num">02 — Model</div>
+        <h2 class="ps-h2">Integrated<br><em>3D Build</em></h2>
+        <p class="ps-body">All disciplines centralized into a single, information-rich virtual environment — enabling accurate cost estimation and early conflict detection.</p>
+        <div class="ps-tags"><span class="ptag">Revit</span><span class="ptag">BIM 360</span><span class="ptag">3ds Max</span><span class="ptag">Unreal Engine</span></div>
+      </div>
+
+      <div class="process-scene" data-step="3">
+        <div class="ps-num">03 — Coordinate</div>
+        <h2 class="ps-h2">Cross-Discipline<br><em>Review</em></h2>
+        <p class="ps-body">Real-time clash detection surfaces and resolves issues before construction — reducing change orders and protecting creative intent.</p>
+      </div>
+
+      <div class="process-scene" data-step="4">
+        <div class="ps-num">04 — Document</div>
+        <h2 class="ps-h2">Construction<br><em>Documentation</em></h2>
+        <p class="ps-body">Production-ready documents, shop drawings, and data-rich schedules — all from the same master model.</p>
+      </div>
+
+      <div class="process-scene process-scene-final" data-step="5">
+        <div class="ps-num">05 — Visualize</div>
+        <h2 class="ps-h2">Render &amp;<br><em>Deliver</em></h2>
+        <p class="ps-body">The same model powers renderings, animations, and animatics for marketing or stakeholder presentations.</p>
+        <div class="ps-metrics">
+          <div class="ps-metric"><div class="ps-metric-n">100+</div><div class="ps-metric-l">Unique Prop Sheets</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">1</div><div class="ps-metric-l">Unified Master Model</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">Multi</div><div class="ps-metric-l">Discipline Coordination</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">Zero</div><div class="ps-metric-l">Scope Gaps</div></div>
+        </div>
+        <a href="#casestudy" class="ps-cta">View Case Study →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -749,7 +801,7 @@ html.preloading,body.preloading{overflow:hidden;}
     </div>
     <div>
       <div class="footer-col-h">Studio</div>
-      <ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="about.html#team-about">Leadership</a></li><li><a href="#process">Our Process</a></li><li><a href="#casestudy">Case Studies</a></li><li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li></ul>
+      <ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="about.html#team-about">Leadership</a></li><li><a href="#process-scroll">Our Process</a></li><li><a href="#casestudy">Case Studies</a></li><li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li></ul>
     </div>
     <div>
       <div class="footer-col-h">Connect</div>
@@ -1080,6 +1132,167 @@ window.addEventListener('load', () => {
       // Extra safety refresh for iOS — some layouts need one more tick
       setTimeout(() => ScrollTrigger.refresh(), 300);
     }
+  })();
+
+  // ── PROCESS SCROLL-DRIVEN IMAGE SEQUENCE ──
+  (function processScroll(){
+    const section  = document.getElementById('process-scroll');
+    const canvas   = document.getElementById('process-canvas');
+    const scenes   = gsap.utils.toArray('.process-scene');
+    const stepNum  = document.getElementById('processStepNum');
+    if (!section || !canvas) return;
+
+    const FRAME_COUNT      = 64;
+    const PRELOAD_CRITICAL = 16;   // ~1MB to get something visible before user arrives
+    const FRAME_PATH       = i => `assets/process-frames/${String(i).padStart(2,'0')}.webp`;
+
+    const ctx   = canvas.getContext('2d');
+    const state = { frame: 0 };
+    const imgs  = new Array(FRAME_COUNT);
+    let   stReady = false;
+
+    // cover-fit draw — same as heroScroll
+    function drawFrame() {
+      const img = nearestLoaded(Math.round(state.frame));
+      if (!img) return;
+      const cw = canvas.width, ch = canvas.height;
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale, dh = ih * scale;
+      ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    }
+
+    function nearestLoaded(idx) {
+      const i = Math.min(FRAME_COUNT - 1, Math.max(0, idx));
+      if (imgs[i] && imgs[i].complete && imgs[i].naturalWidth) return imgs[i];
+      for (let d = 1; d < FRAME_COUNT; d++) {
+        const lo = i - d, hi = i + d;
+        if (lo >= 0 && imgs[lo] && imgs[lo].complete && imgs[lo].naturalWidth) return imgs[lo];
+        if (hi < FRAME_COUNT && imgs[hi] && imgs[hi].complete && imgs[hi].naturalWidth) return imgs[hi];
+      }
+      return null;
+    }
+
+    function resizeProcessCanvas() {
+      canvas.width  = section.offsetWidth  || window.innerWidth;
+      canvas.height = Math.round(window.innerHeight * (window.devicePixelRatio > 1 ? 1 : 1));
+      drawFrame();
+    }
+    window.addEventListener('resize', resizeProcessCanvas);
+    resizeProcessCanvas();
+
+    function loadImg(i) {
+      return new Promise(resolve => {
+        if (imgs[i]) { resolve(); return; }
+        const img = new Image();
+        img.onload  = () => { imgs[i] = img; drawFrame(); resolve(); };
+        img.onerror = () => { imgs[i] = null; resolve(); };
+        img.src     = FRAME_PATH(i);
+      });
+    }
+
+    function loadBg() {
+      const CONCUR = 4;
+      let next = PRELOAD_CRITICAL, active = 0;
+      function pump() {
+        while (next < FRAME_COUNT && active < CONCUR) {
+          active++;
+          loadImg(next++).then(() => { active--; pump(); });
+        }
+      }
+      pump();
+    }
+
+    function setupProcessST() {
+      if (stReady) return;
+      stReady = true;
+
+      // drive canvas frame from scroll
+      gsap.to(state, {
+        frame: FRAME_COUNT - 1,
+        ease: 'none',
+        snap: 'frame',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.4,
+          invalidateOnRefresh: true,
+        },
+        onUpdate: drawFrame,
+      });
+
+      // progress bar
+      gsap.to('.process-progress-fill', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: {
+          trigger: section, start: 'top top', end: 'bottom bottom',
+          scrub: true, invalidateOnRefresh: true,
+        }
+      });
+
+      // scene crossfades — same pattern as hero
+      const n = scenes.length;
+      const segment = 1 / n;
+      const IN = 0.20, HOLD = 0.45, OUT = 0.35;
+      const sceneAnims = [
+        { fromX:-80, fromY:0  },  // 01 Discover  ← from left
+        { fromX:0,   fromY:55 },  // 02 Model      ↑ from below
+        { fromX: 80, fromY:0  },  // 03 Coordinate → from right
+        { fromX:0,   fromY:55 },  // 04 Document   ↑ from below
+        { fromX:-80, fromY:0  },  // 05 Visualize  ← from left
+      ];
+
+      scenes.forEach((scene, i) => {
+        const segStart = i * segment;
+        const segEnd   = (i + 1) * segment;
+        const a        = sceneAnims[i] || sceneAnims[1];
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: () => `${segStart * 100}% top`,
+            end:   () => `${segEnd   * 100}% top`,
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: self => {
+              // update step counter when this scene is active (>50% into it)
+              if (self.progress > 0.1 && stepNum) {
+                stepNum.textContent = String(i + 1).padStart(2, '0');
+              }
+            },
+          }
+        });
+
+        const kids = Array.from(scene.children);
+
+        tl.fromTo(scene, { opacity: 0 }, { opacity: 1, ease: 'power2.out', duration: IN }, 0);
+        tl.fromTo(kids,  { x: a.fromX, y: a.fromY }, { x: 0, y: 0, ease: 'power2.out', duration: IN }, 0);
+        tl.to(scene, { opacity: 1, duration: HOLD });
+        tl.to(scene, { opacity: 0, ease: 'power1.in', duration: OUT });
+      });
+    }
+
+    // Lazy: start loading only when user is ~400px away from section
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        observer.disconnect();
+        // load critical frames, then setup ScrollTrigger
+        let done = 0;
+        for (let i = 0; i < PRELOAD_CRITICAL; i++) {
+          loadImg(i).then(() => {
+            done++;
+            if (done === PRELOAD_CRITICAL) {
+              setupProcessST();
+              loadBg();
+            }
+          });
+        }
+        // safety: setup after 4s even if some frames are slow
+        setTimeout(() => { setupProcessST(); loadBg(); }, 4000);
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(section);
   })();
 
   // ── STATS COUNTER ──
