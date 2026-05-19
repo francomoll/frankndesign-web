@@ -258,6 +258,12 @@ section{padding:6rem 3.5rem;}
 #processStepNum{color:var(--white);transition:color .3s;}
 .process-scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 6vw;opacity:0;pointer-events:none;will-change:transform,opacity;}
 .process-scene::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 45%,transparent 75%);pointer-events:none;}
+/* Right-side scenes: steps 2 & 4 */
+.process-scene[data-step="2"],.process-scene[data-step="4"]{align-items:flex-end;padding:0 6vw;}
+.process-scene[data-step="2"]::before,.process-scene[data-step="4"]::before{background:linear-gradient(to left,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 45%,transparent 75%);}
+.process-scene[data-step="2"] .ps-h2,.process-scene[data-step="4"] .ps-h2{text-align:right;}
+.process-scene[data-step="2"] .ps-body,.process-scene[data-step="4"] .ps-body{text-align:right;}
+.process-scene[data-step="2"] .ps-tags,.process-scene[data-step="4"] .ps-tags{justify-content:flex-end;}
 .ps-num{font-size:.63rem;letter-spacing:.26em;text-transform:uppercase;color:var(--orange);margin-bottom:1.1rem;}
 .ps-h2{font-family:var(--font-d);font-size:clamp(2.6rem,5vw,5.5rem);line-height:.95;text-transform:uppercase;color:var(--white);max-width:14ch;margin-bottom:1.2rem;}
 .ps-h2 em{font-style:normal;color:var(--orange);}
@@ -1282,11 +1288,11 @@ window.addEventListener('load', () => {
       const segment = 1 / n;
       const IN = 0.20, HOLD = 0.45, OUT = 0.35;
       const sceneAnims = [
-        { fromX:-80, fromY:0  },  // 01 Discover  ← from left
-        { fromX:0,   fromY:55 },  // 02 Model      ↑ from below
-        { fromX: 80, fromY:0  },  // 03 Coordinate → from right
-        { fromX:0,   fromY:55 },  // 04 Document   ↑ from below
-        { fromX:-80, fromY:0  },  // 05 Visualize  ← from left
+        { fromX:-90, fromY:0  },  // 01 Discover   ← left side,  slides in from left
+        { fromX: 90, fromY:0  },  // 02 Model       → right side, slides in from right
+        { fromX:-90, fromY:0  },  // 03 Coordinate  ← left side,  slides in from left
+        { fromX: 90, fromY:0  },  // 04 Document    → right side, slides in from right
+        { fromX:-90, fromY:0  },  // 05 Visualize   ← left side,  slides in from left
       ];
 
       scenes.forEach((scene, i) => {
