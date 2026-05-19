@@ -897,8 +897,21 @@ window.addEventListener('load', () => {
         preloader.classList.add('gone');
         document.documentElement.classList.remove('preloading');
         document.body.classList.remove('preloading');
-        // Refresh ScrollTrigger once layout settles
-        setTimeout(() => ScrollTrigger.refresh(), 100);
+        // Refresh ScrollTrigger multiple times — iOS Safari URL bar collapses
+        // after first user scroll, viewport height changes, offsets get stale
+        const refresh = () => { resizeCanvas(); ScrollTrigger.refresh(); };
+        setTimeout(refresh, 100);
+        setTimeout(refresh, 600);
+        setTimeout(refresh, 1500);
+        // Also refresh on first scroll (iOS Safari URL bar collapses then)
+        let firstScroll = true;
+        const onFirstScroll = () => {
+          if (!firstScroll) return;
+          firstScroll = false;
+          setTimeout(refresh, 250);
+          window.removeEventListener('scroll', onFirstScroll);
+        };
+        window.addEventListener('scroll', onFirstScroll, { passive: true });
       }
     }
     function loadBackground() {
