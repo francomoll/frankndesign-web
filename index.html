@@ -88,7 +88,7 @@ body{background:var(--white);color:var(--ink);font-family:var(--font-b);font-wei
 
 /* ═══ HERO — SCROLL-DRIVEN VIDEO (Apple-style) ═══ */
 #hero-scroll{position:relative;height:calc(var(--vh,1vh) * 500);background:var(--black);padding:0!important;margin:0;}
-.hero-sticky{position:sticky;top:0;height:calc(var(--vh,1vh) * 100);width:100%;overflow:hidden;background:var(--black);}
+.hero-sticky{position:sticky;top:0;height:calc(var(--vh,1vh) * 100);width:100%;overflow:hidden;background:var(--black);will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);}
 #hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;}
 #hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;background:var(--black);}
 .hero-vignette{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at center,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 70%,rgba(0,0,0,.75) 100%),linear-gradient(to bottom,rgba(0,0,0,.45) 0%,rgba(0,0,0,.1) 30%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.75) 100%);pointer-events:none;}
@@ -883,15 +883,14 @@ window.addEventListener('load', () => {
       if (w === canvas.width && h === canvas.height) { draw(); return; }
       canvas.width = w; canvas.height = h;
       draw();
-      // ScrollTrigger may have moved offsets when viewport changed
-      if (window.ScrollTrigger) ScrollTrigger.refresh();
+      // NOTE: Do NOT call ScrollTrigger.refresh() here — it fires too often on iOS
+      // (URL bar animation). ST.refresh() is handled by the head-script resize guard
+      // (>150px height delta) and after preloader dismissal.
     }
     window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 100));
-    // iOS Safari fires this when the URL bar collapses/expands — `resize` does NOT
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', resizeCanvas);
-    }
+    window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
+    // NOTE: No visualViewport listener — it fires every frame while iOS URL bar
+    // animates during scroll, causing constant ST.refresh() → jitter.
     resizeCanvas();
 
     function loadFrame(i, priority) {
@@ -926,8 +925,21 @@ window.addEventListener('load', () => {
         preloader.classList.add('gone');
         document.documentElement.classList.remove('preloading');
         document.body.classList.remove('preloading');
-        // Single refresh after layout settles — viewport is now locked via --vh
-        setTimeout(() => { resizeCanvas(); ScrollTrigger.refresh(); }, 150);
+        // Reduced-motion users: just dismiss and show first scene — no GSAP setup.
+        if (reduced) return;
+        // Force scroll to 0 — on iOS the scroll position can drift while
+        // overflow:hidden was active, which would throw off ST measurements.
+        window.scrollTo(0, 0);
+        // Double rAF: wait for browser to finish layout AFTER overflow:hidden removal,
+        // THEN set up ScrollTrigger so it measures the full scrollable document.
+        // This is the key iOS Safari fix: ST was measuring while overflow:hidden
+        // was active (preloader up) → wrong document height → scroll-shift on scrub.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            resizeCanvas();
+            setupHeroScrollTriggers();
+          });
+        });
       }
     }
     function loadBackground() {
@@ -978,63 +990,80 @@ window.addEventListener('load', () => {
     // Safety: dismiss after 8s if loading stalls
     setTimeout(() => { dismissPreloader(); if (loadedCount < FRAME_COUNT) loadBackground(); }, 8000);
 
-    // a) Drive frame from scroll
-    gsap.to(state, {
-      frame: FRAME_COUNT - 1,
-      ease: 'none',
-      snap: 'frame',
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end:   'bottom bottom',
-        scrub: 0.4
-      },
-      onUpdate: draw
-    });
+    // ── GSAP ScrollTrigger setup — called AFTER preloader dismissal ──
+    // Deferring to after layout is stable prevents iOS Safari from measuring
+    // the document while overflow:hidden is active (wrong heights → scroll shift).
+    function setupHeroScrollTriggers() {
+      // a) Drive frame from scroll
+      gsap.to(state, {
+        frame: FRAME_COUNT - 1,
+        ease: 'none',
+        snap: 'frame',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end:   'bottom bottom',
+          scrub: 0.4,
+          invalidateOnRefresh: true,  // recalculate on ST.refresh()
+        },
+        onUpdate: draw
+      });
 
-    // b) Progress bar
-    gsap.to('.hero-progress-fill', {
-      scaleX: 1, ease:'none',
-      scrollTrigger: { trigger: section, start:'top top', end:'bottom bottom', scrub:true }
-    });
-
-    // c) Scenes — equal-segment crossfade
-    const n = scenes.length;
-    const segment = 1 / n;
-    scenes.forEach((scene, i) => {
-      const inStart  = i * segment;
-      const inEnd    = inStart + segment * 0.25;
-      const outStart = (i + 1) * segment - segment * 0.25;
-      const outEnd   = (i + 1) * segment;
-
-      gsap.fromTo(scene,
-        { opacity:0, y: 60 },
-        { opacity:1, y: 0, ease:'power2.out',
-          scrollTrigger: {
-            trigger: section,
-            start: () => `${inStart * 100}% top`,
-            end:   () => `${inEnd * 100}% top`,
-            scrub: true
-          }
+      // b) Progress bar
+      gsap.to('.hero-progress-fill', {
+        scaleX: 1, ease:'none',
+        scrollTrigger: {
+          trigger: section, start:'top top', end:'bottom bottom',
+          scrub:true, invalidateOnRefresh: true
         }
-      );
-      if (i < n - 1) {
-        gsap.to(scene, {
-          opacity:0, y:-60, ease:'power2.in',
-          scrollTrigger: {
-            trigger: section,
-            start: () => `${outStart * 100}% top`,
-            end:   () => `${outEnd * 100}% top`,
-            scrub: true
-          }
-        });
-      }
-    });
+      });
 
-    gsap.to('#scrollHint', {
-      opacity: 0, ease: 'power1.out',
-      scrollTrigger: { trigger: section, start: '5% top', end: '15% top', scrub: true }
-    });
+      // c) Scenes — equal-segment crossfade
+      const n = scenes.length;
+      const segment = 1 / n;
+      scenes.forEach((scene, i) => {
+        const inStart  = i * segment;
+        const inEnd    = inStart + segment * 0.25;
+        const outStart = (i + 1) * segment - segment * 0.25;
+        const outEnd   = (i + 1) * segment;
+
+        gsap.fromTo(scene,
+          { opacity:0, y: 60 },
+          { opacity:1, y: 0, ease:'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: () => `${inStart * 100}% top`,
+              end:   () => `${inEnd * 100}% top`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            }
+          }
+        );
+        if (i < n - 1) {
+          gsap.to(scene, {
+            opacity:0, y:-60, ease:'power2.in',
+            scrollTrigger: {
+              trigger: section,
+              start: () => `${outStart * 100}% top`,
+              end:   () => `${outEnd * 100}% top`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            }
+          });
+        }
+      });
+
+      gsap.to('#scrollHint', {
+        opacity: 0, ease: 'power1.out',
+        scrollTrigger: {
+          trigger: section, start: '5% top', end: '15% top',
+          scrub: true, invalidateOnRefresh: true
+        }
+      });
+
+      // Extra safety refresh for iOS — some layouts need one more tick
+      setTimeout(() => ScrollTrigger.refresh(), 300);
+    }
   })();
 
   // ── STATS COUNTER ──
