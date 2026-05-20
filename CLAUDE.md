@@ -44,7 +44,18 @@
 
 ---
 
-## Estado actual (al 2026-05-18)
+## Páginas del proyecto
+
+| Archivo | Descripción |
+|---|---|
+| `index.html` | Homepage — hero scroll-driven canvas, intro, services, stats, work teaser, team, brands |
+| `about.html` | About Us — hero estático, misión, stats, clientes/valores, bios del equipo |
+| `work.html` | Our Work — hero estático, grilla de proyectos filtrable, teaser de case study, lightbox |
+| `vercel.json` | Config de deploy: cache inmutable 1yr para `/assets/*`, no-cache para HTML |
+
+---
+
+## Estado actual (al 2026-05-19)
 
 ### ✅ Hecho
 - Auditoría de contenido del sitio actual (frankndesign.com).
@@ -62,9 +73,16 @@
   - Hero: poster `hero-frank.webp` + secuencia `hero-frames/00-63.webp`
   - Team: francisco, jeremy, carianne, patrick (.webp)
   - Logo: `FrankNDesign Logo.webp`
+  - About hero bg: `about-us-bg.webp`
+  - Client logos: `assets/partnerships-logo/`
 - INTRO usa imágenes de proyectos remotas (Hagrid's + modelo 3D multidisciplinario), no las fotos del equipo.
 - Animaciones premium: reveals con stagger, counter en stats, parallax intro/work, marquee brands con GSAP, magnetic CTAs, pin reveals en case study.
 - Backdrop direccional + text-shadow en cada hero scene para legibilidad sobre el video.
+- `about.html` — página About completa con hero, misión, stats, clientes/valores, bios del equipo.
+- `work.html` — página Our Work con grilla filtrable, teaser de case study, lightbox.
+- Nav de `index.html` actualizada: Work → `work.html`, Studio → `about.html`.
+- `vercel.json` — cache headers: assets inmutables 1yr, HTML sin cache.
+- Optimizaciones de page speed: preconnect hints, preload LCP images, fetchpriority, decoding attrs.
 - `HANDOFF.md` creado para pasar el proyecto a otro miembro del equipo.
 
 ### 🟡 Pendiente — decisiones del cliente
@@ -141,5 +159,10 @@ grep -n "patrick\|francisco" index.html
 | 2026-05-18 | Optimización: 64 JPG @ 1920×1080 → 64 WebP @ 1600×900, 23MB → 7.4MB | Claude |
 | 2026-05-18 | Borrada carpeta `assets/hero-section1/`; mp4 movido por Franco | Franco + Claude |
 | 2026-05-18 | `HANDOFF.md` + `CLAUDE.md` creados | Claude |
+| 2026-05-19 | `about.html` — About Us page (hero, misión, stats, team bios) | Franco + Claude |
+| 2026-05-19 | `work.html` — Our Work page (filterable grid, lightbox, case study teaser) | Franco + Claude |
+| 2026-05-19 | `vercel.json` — cache headers para deploy en Vercel | Claude |
+| 2026-05-19 | Nav `index.html` actualizada: Work → work.html, Studio → about.html | Claude |
+| 2026-05-19 | Page speed: preconnect, preload LCP, fetchpriority, decoding attrs en todas las páginas | Claude |
 
 > Mantener este log breve. Para detalles, `git log` o el plan archivado en `~/.claude/plans/haz-una-audotoria-de-crispy-hammock.md`.
