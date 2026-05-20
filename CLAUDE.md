@@ -4,13 +4,33 @@
 
 ---
 
+## Regla de inicio de sesión / Session start rule
+
+**Al comenzar cualquier sesión**, Claude debe ejecutar estos comandos y reportar el resultado antes de tocar cualquier archivo:
+
+```bash
+git status
+git log origin/main..HEAD --oneline
+```
+
+- Si hay cambios locales sin commitear → avisarle al usuario antes de hacer pull.
+- Si todo está limpio → recordarle que haga `git pull origin main` para sincronizar.
+
+**At the start of every session**, Claude should run the commands above and report back before touching any file:
+- If there are uncommitted local changes → warn the user before pulling.
+- If the working tree is clean → remind the user to run `git pull origin main` to sync with the team.
+
+---
+
 ## Contexto
 
 - **Cliente:** FrankNDesign (estudio de virtual production / themed entertainment, Clermont FL).
-- **Trabajando:** Franco Moll (info@francomoll.com).
+- **Trabajando:** Franco Moll (info@francomoll.com) + Harshad Variya (harshadvariya1994@gmail.com / GitHub: VariyaHarshad).
 - **Proyecto:** redesign premium del sitio público (actualmente live en frankndesign.com).
 - **Fecha inicio:** 2026-05-18.
-- **Forma de trabajo:** iteración rápida sobre `index.html` con preview live. Franco escribe en español, a veces con typos — interpretar la intención, no pedir clarificación si es obvio.
+- **Repo:** https://github.com/francomoll/frankndesign-web (público)
+- **Deploy:** https://frankndesign-web.vercel.app (auto-deploy en push a `main`)
+- **Forma de trabajo:** iteración rápida sobre los HTML con preview live. Franco escribe en español, a veces con typos — interpretar la intención, no pedir clarificación si es obvio. Harshad trabaja en inglés.
 
 ---
 
@@ -44,14 +64,25 @@
 
 ---
 
-## Páginas del proyecto
+## Estructura de archivos
 
-| Archivo | Descripción |
-|---|---|
-| `index.html` | Homepage — hero scroll-driven canvas, intro, services, stats, work teaser, team, brands |
-| `about.html` | About Us — hero estático, misión, stats, clientes/valores, bios del equipo |
-| `work.html` | Our Work — hero estático, grilla de proyectos filtrable, teaser de case study, lightbox |
-| `vercel.json` | Config de deploy: cache inmutable 1yr para `/assets/*`, no-cache para HTML |
+```
+frankndesign-web/
+├── index.html          # Home — hero scroll-driven canvas, intro, services, stats, work teaser, team, brands
+├── about.html          # About Us — hero estático, misión, stats, clientes/valores, bios del equipo
+├── work.html           # Work/Portfolio — grilla de proyectos filtrable, teaser de case study, lightbox
+├── vercel.json         # Config de deploy: cache inmutable 1yr para /assets/*, no-cache para HTML
+├── HANDOFF.md          # Doc de handoff para humanos
+├── CLAUDE.md           # Este archivo
+└── assets/
+    ├── hero-frames/    # 64 WebP 1600×900 — secuencia del hero (7.4 MB)
+    ├── partnerships-logo/  # 8 logos de partners
+    ├── FrankNDesign Logo.webp
+    ├── hero-frank.webp
+    ├── about-us-bg.webp
+    ├── francisco.webp, jeremy.webp, carianne.webp, patrick.webp
+    └── FrankNDesign Virtual Production*.webp (x4)
+```
 
 ---
 
@@ -59,7 +90,7 @@
 
 ### ✅ Hecho
 - Auditoría de contenido del sitio actual (frankndesign.com).
-- Mockup base reescrito en single-file `index.html` (~900 líneas).
+- Mockup base reescrito en single-file `index.html` (~950 líneas).
 - Paleta swap: naranja `#e8620a` → rojo `#e30613` + grises/negro/blanco.
 - Logo real integrado en nav (con invert filter) y footer.
 - Hero rediseñado: scroll-driven canvas estilo Apple, 4 escenas de texto con crossfade.
@@ -74,15 +105,17 @@
   - Team: francisco, jeremy, carianne, patrick (.webp)
   - Logo: `FrankNDesign Logo.webp`
   - About hero bg: `about-us-bg.webp`
-  - Client logos: `assets/partnerships-logo/`
+  - Client logos: `assets/partnerships-logo/` (8 logos)
 - INTRO usa imágenes de proyectos remotas (Hagrid's + modelo 3D multidisciplinario), no las fotos del equipo.
 - Animaciones premium: reveals con stagger, counter en stats, parallax intro/work, marquee brands con GSAP, magnetic CTAs, pin reveals en case study.
 - Backdrop direccional + text-shadow en cada hero scene para legibilidad sobre el video.
+- iOS Safari fix: `body.overflow` cycle en `dismissPreloader` + `ScrollTrigger.config({ ignoreMobileResize: true })`.
 - `about.html` — página About completa con hero, misión, stats, clientes/valores, bios del equipo.
 - `work.html` — página Our Work con grilla filtrable, teaser de case study, lightbox.
 - Nav de `index.html` actualizada: Work → `work.html`, Studio → `about.html`.
 - `vercel.json` — cache headers: assets inmutables 1yr, HTML sin cache.
 - Optimizaciones de page speed: preconnect hints, preload LCP images, fetchpriority, decoding attrs.
+- GitHub repo público + Vercel auto-deploy en push a `main`.
 - `HANDOFF.md` creado para pasar el proyecto a otro miembro del equipo.
 
 ### 🟡 Pendiente — decisiones del cliente
@@ -93,10 +126,12 @@
 - [ ] ¿Multi-idioma (versión ES) o solo EN?
 
 ### 🟡 Pendiente — trabajo técnico
+- [ ] Revisar y alinear estilos de `about.html` y `work.html` con la paleta y tipografía de `index.html`.
 - [ ] Descargar imágenes del portfolio + case study (hoy apuntan a `frankndesign.com/wp-content/uploads/2026/03/...`) y servir local.
-- [ ] SEO: meta description, OG, Twitter Card, JSON-LD Organization.
-- [ ] Favicon.
+- [ ] SEO: meta description, OG, Twitter Card, JSON-LD Organization (en los 3 HTML).
+- [ ] Favicon (en los 3 HTML).
 - [ ] Página 404.
+- [ ] Verificar iOS Safari fix en el deploy live.
 - [ ] Considerar Lottie en sección Process.
 - [ ] Fallback hero más liviano para mobile (opcional — hoy carga los 7.4 MB también).
 
@@ -159,9 +194,13 @@ grep -n "patrick\|francisco" index.html
 | 2026-05-18 | Optimización: 64 JPG @ 1920×1080 → 64 WebP @ 1600×900, 23MB → 7.4MB | Claude |
 | 2026-05-18 | Borrada carpeta `assets/hero-section1/`; mp4 movido por Franco | Franco + Claude |
 | 2026-05-18 | `HANDOFF.md` + `CLAUDE.md` creados | Claude |
-| 2026-05-19 | `about.html` — About Us page (hero, misión, stats, team bios) | Franco + Claude |
-| 2026-05-19 | `work.html` — Our Work page (filterable grid, lightbox, case study teaser) | Franco + Claude |
-| 2026-05-19 | `vercel.json` — cache headers para deploy en Vercel | Claude |
+| 2026-05-18 | iOS Safari: múltiples fixes de scroll-shift (--vh, rAF, visualViewport) | Claude |
+| 2026-05-19 | iOS Safari fix definitivo: cycle body.overflow + ignoreMobileResize | Claude |
+| 2026-05-19 | Repo hecho público en GitHub | Franco + Claude |
+| 2026-05-19 | `about.html` — About Us page (hero, misión, stats, team bios) | Harshad + Claude |
+| 2026-05-19 | `work.html` — Our Work page (filterable grid, lightbox, case study teaser) | Harshad + Claude |
+| 2026-05-19 | `vercel.json` — cache headers + Vercel auto-deploy configurado | Harshad |
+| 2026-05-19 | `assets/partnerships-logo/` — 8 logos de partners | Harshad |
 | 2026-05-19 | Nav `index.html` actualizada: Work → work.html, Studio → about.html | Claude |
 | 2026-05-19 | Page speed: preconnect, preload LCP, fetchpriority, decoding attrs en todas las páginas | Claude |
 

@@ -220,18 +220,77 @@ section{padding:6rem 3.5rem;}
 .svc-items li{font-size:.8rem;color:var(--muted);padding-left:.9rem;position:relative;}
 .svc-items li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.65rem;}
 
-/* PROCESS */
-#process{background:var(--off-white);padding-top:6rem;padding-bottom:0;}
-.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3.5rem;padding-bottom:6rem;}
-.process-imgs{display:flex;flex-direction:column;gap:.6rem;}
-.process-imgs img{width:100%;border-radius:4px;display:block;box-shadow:0 4px 16px rgba(17,17,17,.07);}
-.pstep{padding:1.4rem 0;border-bottom:1px solid var(--border);}
-.pstep:last-child{border-bottom:none;}
-.pstep-num{font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem;}
-.pstep-name{font-family:var(--font-d);font-size:1.35rem;text-transform:uppercase;margin-bottom:.5rem;color:var(--ink);}
-.pstep-body{font-size:.83rem;color:var(--muted);line-height:1.75;}
-.pstep-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.7rem;}
+/* PROCESS INTRO */
+#process-intro{padding:0!important;margin:0 0 -2px;overflow:hidden;background:#ffffff;position:relative;}
+/* Gradient at bottom fades intro into the dark canvas — hides the seam on scroll */
+#process-intro::after{content:'';position:absolute;bottom:0;left:0;right:0;height:25%;background:linear-gradient(to bottom,transparent,#d0d0d0);z-index:10;pointer-events:none;}
+#process-scroll{margin-top:0!important;}
+.pi-inner{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+/* Image fills the section as background */
+.pi-diagram-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;will-change:transform,opacity;}
+.pi-diagram{width:100%;height:100%;object-fit:contain;display:block;}
+/* Text centered absolutely over the image */
+.pi-content{position:relative;z-index:2;text-align:center;padding:3rem 3.5rem;width:100%;pointer-events:none;transform:translateY(-12%);}
+.pi-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;justify-content:center;gap:.7rem;margin-bottom:1.2rem;}
+.pi-eye::before,.pi-eye::after{content:'';flex:0 0 24px;height:1px;background:var(--orange);}
+.pi-h2{font-family:var(--font-d);font-size:clamp(2.8rem,6vw,6rem);line-height:.92;text-transform:uppercase;color:var(--ink);margin-bottom:1rem;text-shadow:0 2px 24px rgba(208,208,208,.8);}
+.pi-body{font-size:.9rem;color:var(--muted);line-height:1.85;max-width:520px;margin:0 auto;}
+@media(max-width:900px){
+  .pi-h2{font-size:clamp(2.2rem,10vw,3.5rem);}
+  .pi-body{font-size:.83rem;}
+  /* Mobile: taller section gives scroll room for horizontal pan */
+  #process-intro{height:300vh;max-height:none;}
+  .pi-inner{position:sticky;top:0;height:calc(var(--vh,1vh)*100);overflow:hidden;}
+  /* Image container: bottom half of the pinned viewport */
+  .pi-diagram-wrap{
+    position:absolute;left:0;right:0;bottom:0;top:45%;
+    overflow:hidden;
+    opacity:1!important;transform:none!important;
+  }
+  /* Image renders at container height, auto width → naturally wider than viewport */
+  .pi-diagram{height:100%;width:auto;max-width:none;display:block;will-change:transform;object-fit:unset;}
+  /* Text sits in top half */
+  .pi-content{position:absolute;top:0;left:0;right:0;bottom:55%;display:flex;flex-direction:column;justify-content:center;transform:none!important;padding:1.5rem;}
+}
+
+/* PROCESS SCROLL-DRIVEN CANVAS */
+#process-scroll{position:relative;height:calc(var(--vh,1vh)*600);background:#111;padding:0!important;margin:0;}
+.process-sticky{position:sticky;top:0;height:calc(var(--vh,1vh)*100);width:100%;overflow:hidden;background:#111;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0);}
+#process-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;}
+.process-vignette{position:absolute;inset:0;z-index:2;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.22) 55%,transparent 100%),linear-gradient(to bottom,rgba(0,0,0,.4) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.65) 100%);pointer-events:none;opacity:0;}
+.process-progress{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);z-index:6;}
+.process-progress-fill{height:100%;background:var(--orange);transform:scaleX(0);transform-origin:left center;}
+.process-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;}
+.process-eyebrow-fixed{position:absolute;top:2.2rem;left:6vw;display:flex;align-items:center;gap:2rem;}
+.process-eye{font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:.7rem;}
+.process-eye::before{content:'';width:24px;height:1px;background:var(--orange);}
+.process-step-counter{font-size:.63rem;letter-spacing:.2em;color:rgba(255,255,255,.3);}
+#processStepNum{color:var(--white);transition:color .3s;}
+.process-scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 6vw;opacity:0;pointer-events:none;will-change:transform,opacity;}
+.process-scene::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to right,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 45%,transparent 75%);pointer-events:none;}
+/* Right-side scenes: steps 2 & 4 */
+.process-scene[data-step="2"],.process-scene[data-step="4"]{align-items:flex-end;padding:0 6vw;}
+.process-scene[data-step="2"]::before,.process-scene[data-step="4"]::before{background:linear-gradient(to left,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 45%,transparent 75%);}
+.process-scene[data-step="2"] .ps-h2,.process-scene[data-step="4"] .ps-h2{text-align:right;}
+.process-scene[data-step="2"] .ps-body,.process-scene[data-step="4"] .ps-body{text-align:right;}
+.process-scene[data-step="2"] .ps-tags,.process-scene[data-step="4"] .ps-tags{justify-content:flex-end;}
+.ps-num{font-size:.63rem;letter-spacing:.26em;text-transform:uppercase;color:var(--orange);margin-bottom:1.1rem;}
+.ps-h2{font-family:var(--font-d);font-size:clamp(2.6rem,5vw,5.5rem);line-height:.95;text-transform:uppercase;color:var(--white);max-width:14ch;margin-bottom:1.2rem;}
+.ps-h2 em{font-style:normal;color:var(--orange);}
+.ps-body{font-size:.88rem;color:rgba(255,255,255,.65);max-width:420px;line-height:1.8;}
+.ps-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem;}
+.ps-metrics{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem;margin-top:1.4rem;max-width:360px;}
+.ps-metric-n{font-family:var(--font-d);font-size:1.6rem;color:var(--orange);line-height:1;}
+.ps-metric-l{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-top:.15rem;}
+.ps-cta{display:inline-block;margin-top:1.4rem;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--white);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:2px;transition:color .25s,border-color .25s;pointer-events:auto;}
+.ps-cta:hover{color:var(--orange);border-color:var(--orange);}
 .ptag{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);background:var(--orange-pale);border:1px solid var(--orange-mid);padding:.2rem .6rem;border-radius:2px;}
+@media(max-width:900px){
+  #process-scroll{height:calc(var(--vh,1vh)*550)!important;}
+  .process-scene{padding:0 5vw!important;}
+  .ps-h2{font-size:clamp(2rem,9vw,3.2rem)!important;}
+  .ps-metrics{grid-template-columns:1fr 1fr;}
+}
 
 /* CASE STUDY — tighter, editorial, not overwhelming */
 #casestudy{background:var(--warm-white);padding:0;}
@@ -272,7 +331,7 @@ section{padding:6rem 3.5rem;}
 /* TEAM */
 #team{background:var(--white);}
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8rem;margin-top:3rem;}
-.team-card{cursor:pointer;}
+.team-card{cursor:pointer;text-decoration:none;color:inherit;display:block;}
 .team-photo{aspect-ratio:3/4;overflow:hidden;border-radius:4px;position:relative;box-shadow:0 8px 24px rgba(17,17,17,.08);}
 .team-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1),filter .4s;}
 .team-card:hover .team-photo img{transform:scale(1.05);filter:brightness(.8);}
@@ -361,7 +420,7 @@ html.preloading,body.preloading{overflow:hidden;}
   .work-hdr{flex-direction:column;align-items:flex-start;gap:1rem;}
   /* Services 1 col on very narrow */
   @media(max-width:540px){.svc-grid{grid-template-columns:1fr;}.team-grid{grid-template-columns:1fr 1fr;}#stats .stat-l{font-size:.58rem;}}
-  #intro,#process .process-grid,.cs-intro{grid-template-columns:1fr!important;gap:2.5rem;}
+  #intro,.cs-intro{grid-template-columns:1fr!important;gap:2.5rem;}
   .gallery-grid3{grid-template-columns:1fr 1fr;}
   .gallery-grid2{grid-template-columns:1fr;}
   .team-grid{grid-template-columns:1fr 1fr;}
@@ -402,7 +461,7 @@ html.preloading,body.preloading{overflow:hidden;}
   <ul class="nav-links" id="navLinks">
     <li><a href="work.html">Work</a></li>
     <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
+    <li><a href="#process-scroll">Process</a></li>
     <li><a href="#casestudy">Case Study</a></li>
     <li><a href="about.html">Studio</a></li>
     <li><a href="https://frankndesign.com/contact/" class="nav-cta">Contact</a></li>
@@ -444,7 +503,7 @@ html.preloading,body.preloading{overflow:hidden;}
         <h2 class="hero-h2">Projects that<br><em>draw people together.</em></h2>
         <div class="hero-cta-row" style="margin-top:2.4rem;justify-content:center;">
           <a href="#work" class="btn-orange">View Our Work</a>
-          <a href="#process" class="btn-ghost-white">Our Process</a>
+          <a href="#process-scroll" class="btn-ghost-white">Our Process</a>
         </div>
       </div>
 
@@ -591,23 +650,66 @@ html.preloading,body.preloading{overflow:hidden;}
   </div>
 </section>
 
-<!-- PROCESS -->
-<section id="process">
-  <div class="sec-eye reveal">How We Work</div>
-  <h2 class="sec-h2 reveal d1">Our Process Simplifies<br>Your Project</h2>
-  <p class="sec-body reveal d2" style="margin-top:1rem;max-width:600px;">We break down design silos and centralize project information into a single, accessible, data-rich virtual environment — so every discipline works from one truth.</p>
-  <div class="process-grid">
-    <div class="process-imgs reveal-l">
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/eed4cb84-b12c-42e5-9e04-afb9629bdf9c_rw_1920.webp" alt="Integrated BIM model" loading="lazy"/>
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/569754cc-7057-4c53-8d93-63f19add37cc_rw_1920.webp" alt="Construction documents" loading="lazy"/>
-      <img src="https://frankndesign.com/wp-content/uploads/2026/03/3ca78901-f4a6-4389-9694-148d0308d24b_rw_600-1.gif" alt="Real-time model animation" loading="lazy"/>
+<!-- PROCESS INTRO — scroll-driven zoom+fade before the canvas -->
+<section id="process-intro">
+  <div class="pi-inner">
+    <!-- Image fills the section — zooms+fades in on scroll -->
+    <div class="pi-diagram-wrap">
+      <img class="pi-diagram" src="assets/research-and-strategy.webp" alt="Research and Strategy — inputs flow into FrankNDesign and become a finished build" loading="eager"/>
     </div>
-    <div class="reveal-r" style="padding-top:.5rem;">
-      <div class="pstep"><div class="pstep-num">01 — DISCOVER</div><div class="pstep-name">Research &amp; Strategy</div><div class="pstep-body">Deep-dive into project requirements, stakeholder goals, and creative intent. We establish scope, standards, and technical approach before any model begins.</div></div>
-      <div class="pstep"><div class="pstep-num">02 — MODEL</div><div class="pstep-name">Integrated 3D Build</div><div class="pstep-body">All disciplines centralized into a single, information-rich virtual environment — enabling accurate cost estimation and early conflict detection.</div><div class="pstep-tags"><span class="ptag">Revit</span><span class="ptag">BIM 360</span><span class="ptag">3ds Max</span><span class="ptag">Unreal Engine</span></div></div>
-      <div class="pstep"><div class="pstep-num">03 — COORDINATE</div><div class="pstep-name">Cross-Discipline Review</div><div class="pstep-body">Real-time clash detection surfaces and resolves issues before construction — reducing change orders and protecting creative intent.</div></div>
-      <div class="pstep"><div class="pstep-num">04 — DOCUMENT</div><div class="pstep-name">Construction Documentation</div><div class="pstep-body">Production-ready documents, shop drawings, and data-rich schedules — all from the same master model.</div></div>
-      <div class="pstep"><div class="pstep-num">05 — VISUALIZE</div><div class="pstep-name">Render &amp; Deliver</div><div class="pstep-body">The same model powers renderings, animations, and animatics for marketing or stakeholder presentations. Visualization and production are never siloed.</div></div>
+    <!-- Text centered over the image -->
+    <div class="pi-content">
+      <div class="pi-eye">How We Work</div>
+      <h2 class="pi-h2">From Inputs<br>to Outcome</h2>
+      <p class="pi-body">Every project starts with what you bring — ideas, drawings, assets, photos. FrankNDesign absorbs it all and delivers a fully coordinated, construction-ready result.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS SCROLL-DRIVEN CANVAS -->
+<section id="process-scroll">
+  <div class="process-sticky">
+    <canvas id="process-canvas" width="1600" height="900"></canvas>
+    <div class="process-vignette"></div>
+    <div class="process-progress"><div class="process-progress-fill"></div></div>
+    <div class="process-overlay">
+      <div class="process-scene" data-step="1">
+        <div class="ps-num">01 — Discover</div>
+        <h2 class="ps-h2">Research &amp;<br><em>Strategy</em></h2>
+        <p class="ps-body">Deep-dive into project requirements, stakeholder goals, and creative intent. We establish scope, standards, and technical approach before any model begins.</p>
+      </div>
+
+      <div class="process-scene" data-step="2">
+        <div class="ps-num">02 — Model</div>
+        <h2 class="ps-h2">Integrated<br><em>3D Build</em></h2>
+        <p class="ps-body">All disciplines centralized into a single, information-rich virtual environment — enabling accurate cost estimation and early conflict detection.</p>
+        <div class="ps-tags"><span class="ptag">Revit</span><span class="ptag">BIM 360</span><span class="ptag">3ds Max</span><span class="ptag">Unreal Engine</span></div>
+      </div>
+
+      <div class="process-scene" data-step="3">
+        <div class="ps-num">03 — Coordinate</div>
+        <h2 class="ps-h2">Cross-Discipline<br><em>Review</em></h2>
+        <p class="ps-body">Real-time clash detection surfaces and resolves issues before construction — reducing change orders and protecting creative intent.</p>
+      </div>
+
+      <div class="process-scene" data-step="4">
+        <div class="ps-num">04 — Document</div>
+        <h2 class="ps-h2">Construction<br><em>Documentation</em></h2>
+        <p class="ps-body">Production-ready documents, shop drawings, and data-rich schedules — all from the same master model.</p>
+      </div>
+
+      <div class="process-scene process-scene-final" data-step="5">
+        <div class="ps-num">05 — Visualize</div>
+        <h2 class="ps-h2">Render &amp;<br><em>Deliver</em></h2>
+        <p class="ps-body">The same model powers renderings, animations, and animatics for marketing or stakeholder presentations.</p>
+        <div class="ps-metrics">
+          <div class="ps-metric"><div class="ps-metric-n">100+</div><div class="ps-metric-l">Unique Prop Sheets</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">1</div><div class="ps-metric-l">Unified Master Model</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">Multi</div><div class="ps-metric-l">Discipline Coordination</div></div>
+          <div class="ps-metric"><div class="ps-metric-n">Zero</div><div class="ps-metric-l">Scope Gaps</div></div>
+        </div>
+        <a href="#casestudy" class="ps-cta">View Case Study →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -710,22 +812,22 @@ html.preloading,body.preloading{overflow:hidden;}
   <h2 class="sec-h2 reveal d1">Leadership Team</h2>
   <p class="sec-body reveal d2" style="margin-top:.9rem;max-width:540px;">A multidisciplinary team of designers, architects, BIM specialists, and production managers with decades of combined experience in themed entertainment and hospitality.</p>
   <div class="team-grid">
-    <div class="team-card reveal">
+    <a class="team-card reveal" href="about.html#francisco">
       <div class="team-photo"><img src="assets/francisco.webp" alt="Francisco J. Núñez" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Francisco J. Núñez</div><div class="team-role">Principal &amp; Creative Director</div>
-    </div>
-    <div class="team-card reveal d1">
+    </a>
+    <a class="team-card reveal d1" href="about.html#jeremy">
       <div class="team-photo"><img src="assets/jeremy.webp" alt="Jeremy Grunert" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Jeremy Grunert</div><div class="team-role">Director of Production</div>
-    </div>
-    <div class="team-card reveal d2">
+    </a>
+    <a class="team-card reveal d2" href="about.html#carianne">
       <div class="team-photo"><img src="assets/carianne.webp" alt="Carianne DePasqua" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Carianne DePasqua</div><div class="team-role">Design Lead</div>
-    </div>
-    <div class="team-card reveal d3">
+    </a>
+    <a class="team-card reveal d3" href="about.html#patrick">
       <div class="team-photo"><img src="assets/patrick.webp" alt="Patrick Witthaus" loading="lazy"/><div class="team-hover-overlay"></div></div>
       <div class="team-name">Patrick Witthaus</div><div class="team-role">BIM Manager</div>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -749,7 +851,7 @@ html.preloading,body.preloading{overflow:hidden;}
     </div>
     <div>
       <div class="footer-col-h">Studio</div>
-      <ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="about.html#team-about">Leadership</a></li><li><a href="#process">Our Process</a></li><li><a href="#casestudy">Case Studies</a></li><li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li></ul>
+      <ul class="footer-links"><li><a href="about.html">About Us</a></li><li><a href="about.html#team-about">Leadership</a></li><li><a href="#process-scroll">Our Process</a></li><li><a href="#casestudy">Case Studies</a></li><li><a href="https://forms.monday.com/forms/fd927499808be152a8f086774e1e2dda?r=use1">Apply</a></li></ul>
     </div>
     <div>
       <div class="footer-col-h">Connect</div>
@@ -789,6 +891,7 @@ window.addEventListener('load', () => {
       smoothWheel: true,
       smoothTouch: false
     });
+    window._lenis = lenis; // expose for anchor clicks
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(t => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -1028,39 +1131,45 @@ window.addEventListener('load', () => {
         }
       });
 
-      // c) Scenes — equal-segment crossfade
+      // c) Scenes — single timeline per scene (entrance → hold → exit as one scrub)
+      // Using a timeline avoids GSAP tween conflicts between entrance and exit tweens.
       const n = scenes.length;
       const segment = 1 / n;
-      scenes.forEach((scene, i) => {
-        const inStart  = i * segment;
-        const inEnd    = inStart + segment * 0.25;
-        const outStart = (i + 1) * segment - segment * 0.25;
-        const outEnd   = (i + 1) * segment;
 
-        gsap.fromTo(scene,
-          { opacity:0, y: 60 },
-          { opacity:1, y: 0, ease:'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: () => `${inStart * 100}% top`,
-              end:   () => `${inEnd * 100}% top`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            }
-          }
-        );
-        if (i < n - 1) {
-          gsap.to(scene, {
-            opacity:0, y:-60, ease:'power2.in',
-            scrollTrigger: {
-              trigger: section,
-              start: () => `${outStart * 100}% top`,
-              end:   () => `${outEnd * 100}% top`,
-              scrub: true,
-              invalidateOnRefresh: true,
-            }
-          });
-        }
+      // in: 20% | hold: 45% | out: 35%  (must add to 1.0)
+      const IN = 0.20, HOLD = 0.45, OUT = 0.35;
+
+      // Per-scene entrance directions — exit is always a clean fade (no movement)
+      const sceneAnims = [
+        { fromX:-90, fromY:0  },   // 1: slides in from left
+        { fromX:0,   fromY:60 },   // 2: rises from below
+        { fromX: 90, fromY:0  },   // 3: slides in from right
+        { fromX:0,   fromY:60 },   // 4: rises from below
+      ];
+
+      scenes.forEach((scene, i) => {
+        const segStart = i * segment;
+        const segEnd   = (i + 1) * segment;
+        const a = sceneAnims[i] || sceneAnims[1];
+
+        const stConfig = {
+          trigger: section,
+          start: () => `${segStart * 100}% top`,
+          end:   () => `${segEnd   * 100}% top`,
+          scrub: true,
+          invalidateOnRefresh: true,
+        };
+
+        const tl = gsap.timeline({ scrollTrigger: stConfig });
+        const kids = Array.from(scene.children); // text elements only — NOT ::before (gradient)
+
+        // entrance: scene fades in, text children slide in from direction
+        tl.fromTo(scene, { opacity:0 }, { opacity:1, ease:'power2.out', duration: IN }, 0);
+        tl.fromTo(kids,  { x: a.fromX, y: a.fromY }, { x:0, y:0, ease:'power2.out', duration: IN }, 0);
+        // hold
+        tl.to(scene, { opacity:1, duration: HOLD });
+        // exit: scene fades out, text stays put — gradient never moves, never gets clipped
+        tl.to(scene, { opacity:0, ease:'power1.in', duration: OUT });
       });
 
       gsap.to('#scrollHint', {
@@ -1074,6 +1183,267 @@ window.addEventListener('load', () => {
       // Extra safety refresh for iOS — some layouts need one more tick
       setTimeout(() => ScrollTrigger.refresh(), 300);
     }
+  })();
+
+  // ── PROCESS SCROLL-DRIVEN IMAGE SEQUENCE ──
+  (function processScroll(){
+    const section  = document.getElementById('process-scroll');
+    const canvas   = document.getElementById('process-canvas');
+    const scenes   = gsap.utils.toArray('.process-scene');
+    const stepNum  = document.getElementById('processStepNum');
+    if (!section || !canvas) return;
+
+    const FRAME_COUNT      = 64;
+    const PRELOAD_CRITICAL = 16;   // ~1MB to get something visible before user arrives
+    const FRAME_PATH       = i => `assets/process-frames/${String(i).padStart(2,'0')}.webp`;
+
+    const ctx   = canvas.getContext('2d');
+    const state = { frame: 0 };
+    const imgs  = new Array(FRAME_COUNT);
+    let   stReady = false;
+
+    // cover-fit draw — same as heroScroll
+    function drawFrame() {
+      const img = nearestLoaded(Math.round(state.frame));
+      if (!img) return;
+      const cw = canvas.width, ch = canvas.height;
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale, dh = ih * scale;
+      ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    }
+
+    function nearestLoaded(idx) {
+      const i = Math.min(FRAME_COUNT - 1, Math.max(0, idx));
+      if (imgs[i] && imgs[i].complete && imgs[i].naturalWidth) return imgs[i];
+      for (let d = 1; d < FRAME_COUNT; d++) {
+        const lo = i - d, hi = i + d;
+        if (lo >= 0 && imgs[lo] && imgs[lo].complete && imgs[lo].naturalWidth) return imgs[lo];
+        if (hi < FRAME_COUNT && imgs[hi] && imgs[hi].complete && imgs[hi].naturalWidth) return imgs[hi];
+      }
+      return null;
+    }
+
+    function resizeProcessCanvas() {
+      canvas.width  = section.offsetWidth  || window.innerWidth;
+      canvas.height = Math.round(window.innerHeight * (window.devicePixelRatio > 1 ? 1 : 1));
+      drawFrame();
+    }
+    window.addEventListener('resize', resizeProcessCanvas);
+    resizeProcessCanvas();
+
+    function loadImg(i) {
+      return new Promise(resolve => {
+        if (imgs[i]) { resolve(); return; }
+        const img = new Image();
+        img.onload  = () => { imgs[i] = img; drawFrame(); resolve(); };
+        img.onerror = () => { imgs[i] = null; resolve(); };
+        img.src     = FRAME_PATH(i);
+      });
+    }
+
+    function loadBg() {
+      const CONCUR = 4;
+      let next = PRELOAD_CRITICAL, active = 0;
+      function pump() {
+        while (next < FRAME_COUNT && active < CONCUR) {
+          active++;
+          loadImg(next++).then(() => { active--; pump(); });
+        }
+      }
+      pump();
+    }
+
+    function setupProcessST() {
+      if (stReady) return;
+      stReady = true;
+
+      // drive canvas frame from scroll
+      gsap.to(state, {
+        frame: FRAME_COUNT - 1,
+        ease: 'none',
+        snap: 'frame',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.4,
+          invalidateOnRefresh: true,
+        },
+        onUpdate: drawFrame,
+      });
+
+      // vignette — starts invisible, fades in as first scene begins (no dark overlay on frame 0)
+      const vignette = section.querySelector('.process-vignette');
+      if (vignette) {
+        gsap.to(vignette, {
+          opacity: 1, ease: 'power1.out',
+          scrollTrigger: {
+            trigger: section, start: 'top top', end: '12% top',
+            scrub: true, invalidateOnRefresh: true,
+          }
+        });
+      }
+
+      // progress bar
+      gsap.to('.process-progress-fill', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: {
+          trigger: section, start: 'top top', end: 'bottom bottom',
+          scrub: true, invalidateOnRefresh: true,
+        }
+      });
+
+      // scene crossfades — same pattern as hero
+      const n = scenes.length;
+      const segment = 1 / n;
+      const IN = 0.20, HOLD = 0.45, OUT = 0.35;
+      const sceneAnims = [
+        { fromX:-90, fromY:0  },  // 01 Discover   ← left side,  slides in from left
+        { fromX: 90, fromY:0  },  // 02 Model       → right side, slides in from right
+        { fromX:-90, fromY:0  },  // 03 Coordinate  ← left side,  slides in from left
+        { fromX: 90, fromY:0  },  // 04 Document    → right side, slides in from right
+        { fromX:-90, fromY:0  },  // 05 Visualize   ← left side,  slides in from left
+      ];
+
+      scenes.forEach((scene, i) => {
+        const segStart = i * segment;
+        const segEnd   = (i + 1) * segment;
+        const a        = sceneAnims[i] || sceneAnims[1];
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: () => `${segStart * 100}% top`,
+            end:   () => `${segEnd   * 100}% top`,
+            scrub: true,
+            invalidateOnRefresh: true,
+            onUpdate: self => {
+              // update step counter when this scene is active (>50% into it)
+              if (self.progress > 0.1 && stepNum) {
+                stepNum.textContent = String(i + 1).padStart(2, '0');
+              }
+            },
+          }
+        });
+
+        const kids = Array.from(scene.children);
+
+        tl.fromTo(scene, { opacity: 0 }, { opacity: 1, ease: 'power2.out', duration: IN }, 0);
+        tl.fromTo(kids,  { x: a.fromX, y: a.fromY }, { x: 0, y: 0, ease: 'power2.out', duration: IN }, 0);
+        tl.to(scene, { opacity: 1, duration: HOLD });
+        tl.to(scene, { opacity: 0, ease: 'power1.in', duration: OUT });
+      });
+    }
+
+    // Lazy: start loading only when user is ~400px away from section
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        observer.disconnect();
+        // load critical frames, then setup ScrollTrigger
+        let done = 0;
+        for (let i = 0; i < PRELOAD_CRITICAL; i++) {
+          loadImg(i).then(() => {
+            done++;
+            if (done === PRELOAD_CRITICAL) {
+              setupProcessST();
+              loadBg();
+            }
+          });
+        }
+        // safety: setup after 4s even if some frames are slow
+        setTimeout(() => { setupProcessST(); loadBg(); }, 4000);
+      }
+    }, { rootMargin: '400px' });
+    observer.observe(section);
+  })();
+
+  // ── PROCESS INTRO — zoom + text reveal/exit ──
+  (function processIntro(){
+    const section  = document.getElementById('process-intro');
+    if (!section) return;
+    const diagram  = section.querySelector('.pi-diagram-wrap');
+    const eye      = section.querySelector('.pi-eye');
+    const h2       = section.querySelector('.pi-h2');
+    const body     = section.querySelector('.pi-body');
+    const textEls  = [eye, h2, body].filter(Boolean);
+
+    // ── BG: white → #d0d0d0 as process-intro scrolls in ──
+    gsap.fromTo(section,
+      { backgroundColor: '#ffffff' },
+      { backgroundColor: '#d0d0d0', ease: 'none',
+        scrollTrigger: {
+          trigger: section, start: 'top 80%', end: 'top 10%',
+          scrub: 1, invalidateOnRefresh: true,
+        }
+      }
+    );
+
+    // ── Services section also fades white → gray in sync ──
+    const servicesSection = document.getElementById('services');
+    if (servicesSection) {
+      gsap.fromTo(servicesSection,
+        { backgroundColor: '#ffffff' },
+        { backgroundColor: '#d0d0d0', ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top 80%', end: 'top 10%',
+            scrub: 1, invalidateOnRefresh: true,
+          }
+        }
+      );
+    }
+
+    // ── MOBILE: horizontal pan tied to vertical scroll ──
+    if (diagram && isMobile) {
+      const img = diagram.querySelector('.pi-diagram');
+      const doMobilePan = () => {
+        // Container height = 55% of viewport height
+        const containerH = window.innerHeight * 0.55;
+        // Rendered image width = naturalWidth scaled to container height
+        const renderedW  = img.naturalWidth * (containerH / img.naturalHeight);
+        const travel     = -(renderedW - window.innerWidth);
+        if (travel >= 0) return; // already fits, no pan needed
+        gsap.fromTo(img,
+          { x: 0 },
+          { x: travel, ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top top', end: 'bottom bottom',
+              scrub: true, invalidateOnRefresh: true,
+            }
+          }
+        );
+      };
+      if (img.complete && img.naturalWidth) doMobilePan();
+      else img.addEventListener('load', doMobilePan, { once: true });
+      return;
+    }
+
+    // ── IMAGE: continuous zoom-in as user scrolls through section ──
+    if (diagram && !isMobile) {
+      gsap.fromTo(diagram,
+        { scale: 1.0 },
+        { scale: 1.18, ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top bottom', end: 'bottom top',
+            scrub: 1.2, invalidateOnRefresh: true,
+          }
+        }
+      );
+    }
+
+    // ── TEXT ENTER: each element rises from below on section entry ──
+    if (eye)  gsap.fromTo(eye,  { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 35%', scrub: 0.7, invalidateOnRefresh: true } });
+    if (h2)   gsap.fromTo(h2,   { y: 70, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 75%', end: 'top 30%', scrub: 0.7, invalidateOnRefresh: true } });
+    if (body) gsap.fromTo(body, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: 'power3.out', scrollTrigger: { trigger: section, start: 'top 70%', end: 'top 25%', scrub: 0.7, invalidateOnRefresh: true } });
+
+    // ── TEXT EXIT: drift up + fade as section leaves ──
+    gsap.to(textEls, {
+      y: -50, opacity: 0, ease: 'power2.in', stagger: 0.04,
+      scrollTrigger: {
+        trigger: section, start: 'bottom 30%', end: 'bottom -5%',
+        scrub: 0.7, invalidateOnRefresh: true,
+      }
+    });
   })();
 
   // ── STATS COUNTER ──
@@ -1129,6 +1499,20 @@ window.addEventListener('load', () => {
       btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
     });
   }
+});
+
+// ── SMOOTH ANCHOR LINKS (use Lenis when available) ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    if (window._lenis) {
+      window._lenis.scrollTo(target, { offset: 0, duration: 1.6, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 });
 
 // ── LIGHTBOX ──
